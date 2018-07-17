@@ -1,5 +1,5 @@
 {
-  "name": "The Paths backend",
+  "name": "the-paths-backend",
   "version": "0.1",
   "description": "Express backend",
   "main": "index.js",
