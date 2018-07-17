@@ -3,9 +3,12 @@
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
+require('dotenv').config();
 
-const { PORT, CLIENT_ORIGIN } = require('./config');
+
+const { PORT, CLIENT_ORIGIN} = require('./config');
 const { dbConnect } = require('./db-mongoose');
+
 
 
 const app = express();
