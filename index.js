@@ -6,7 +6,7 @@ const morgan = require('morgan');
 require('dotenv').config();
 
 
-const { PORT, CLIENT_ORIGIN} = require('./config');
+const { PORT, CLIENT_ORIGIN } = require('./config');
 const { dbConnect } = require('./db-mongoose');
 
 
@@ -24,6 +24,7 @@ app.use(
     origin: CLIENT_ORIGIN
   })
 );
+
 
 function runServer(port = PORT) {
   const server = app
