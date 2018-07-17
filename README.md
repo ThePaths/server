@@ -4,6 +4,7 @@ A template for developing and deploying Node.js apps.
 
 ## Getting started
 
+
 ### Setting up a project
 
 * Move into your projects directory: `cd ~/YOUR_PROJECTS_DIRECTORY`
@@ -43,3 +44,10 @@ Requires the [Heroku CLI client](https://devcenter.heroku.com/articles/heroku-co
 ### Deploying to Heroku
 
 * Push your code to Heroku: `git push heroku master`
+
+### Authors
+
+-Dameon Mendoza
+-Terrance Corley
+-Jimm Lusk
+-Sayed Khan
