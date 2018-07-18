@@ -1,6 +1,6 @@
 {
   "name": "the-paths-backend",
-  "version": "0.1",
+  "version": "1.0.0",
   "description": "Express backend",
   "main": "index.js",
   "scripts": {
@@ -15,12 +15,17 @@
   "author": "The Paths",
   "license": "MIT",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "cors": "^2.8.4",
+    "dotenv": "^6.0.0",
     "express": "^4.16.3",
+    "jsonwebtoken": "^8.3.0",
     "knex": "^0.14.4",
     "mongoose": "^5.0.6",
-    "dotenv": "^6.0.0",
-    "morgan": "^1.9.0"
+    "morgan": "^1.9.0",
+    "passport": "^0.4.0",
+    "passport-jwt": "^4.0.0",
+    "passport-local": "^1.0.0"
   },
   "devDependencies": {
     "chai": "^4.1.2",
