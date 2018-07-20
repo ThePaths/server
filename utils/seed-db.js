@@ -15,7 +15,7 @@ mongoose.connect(DATABASE_URL)
     console.log(DATABASE_URL);
   })
   .then(() => {
-    return Promise.all(seedUsers.map(user => User.hashPassword(user.password)))
+    return Promise.all(seedUsers.map(user => User.hashPassword(user.password)));
   })
   .then(digests => {
     seedUsers.forEach((user, i) => user.password = digests[i]);

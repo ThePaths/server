@@ -18,8 +18,29 @@ router.get('/', (req, res, next) => {
     .catch(err => next(err));
 });
 
+// Get single path by Id
+router.get('/:pathId', (req, res, next) => {
+  const pathId = req.params.id;
+  if(!ObjectId.isValid(pathId)){
+    const err = new Error('Provided pathId is not a valid ObjectId');
+    err.status(400);
+    return next(err);
+  }
+  Path.findById()
+    .then(path => {
+      if(path){
+        res.json(path);
+      } else {
+        Promise.reject({
+          code: 400,
+          reason: 'Bad Request',
+          message: `Could not find path with id ${pathId}`,
+        });
+      }
+    })
+    .catch(err => next(err));
+});
 
-// UNTESTED
 // POST a new saved path to a currently logged in user
 // req.body must contain key "pathId" with MongoDB ObjectId as it's value
 router.post('/save', jwtAuth, (req, res, next) => {
@@ -61,7 +82,6 @@ router.post('/save', jwtAuth, (req, res, next) => {
     });
 });
 
-// UNTESTED
 // POST a new path to set as in progress to logged in user
 // req.body must contain key "pathId" with MongoDB ObjectId as it's value
 // Checks if recieved pathId is a saved path and removes it if so <---- NEED TO ADD THIS
@@ -147,6 +167,31 @@ router.post('/display', jwtAuth, (req, res, next) => {
     .catch((err)=>{
       next(err);
     });
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Get the path overview if the user is logged in
+router.get('/overview/:id', jwtAuth, (req, res, next) => {
+  const { username } = req.user;
+  console.log(username);
+});
+
+// Get the path overview if no user is logged in
+router.get('/guest-overview/:id', (req, res, next) => {
+  console.log('no user');
 });
 
 module.exports = router;
