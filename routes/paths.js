@@ -69,16 +69,39 @@ router.post('/save', jwtAuth, (req, res, next) => {
       User.findById(id, (err, user) => {
         if(err){
           Promise.reject({
-            code: 500,
+            code: 400,
+            reason: 'Bad Request',
             message: `Failed to find user with id ${id}`
           });
         }
+        // Check path isn't alredy in completed
+        for(let i = 0; i < user.completedPaths.length; i++){
+          if(user.completedPaths[i].path.toString() === pathId){
+            alreadySaved = true;
+            let returnObj = user.completedPaths[i];
+            returnObj.message = 'Path already completed';
+            return res.status(200).json(returnObj);
+          }
+        }
+        // Check path isn't already in current
+        for(let i = 0; i < user.currentPaths.length; i++){
+          if(user.currentPaths[i].path.toString() === pathId){
+            alreadySaved = true;
+            let returnObj = user.currentPaths[i];
+            returnObj.message = 'Path already in progress';
+            return res.status(200).json(returnObj);
+          }
+        }
+        // Check that path isn't already saved
         for(let i = 0; i < user.savedPaths.length; i++){
           if(user.savedPaths[i].path.toString() === pathId){
             alreadySaved = true;
-            return res.status(201).json(user.savedPaths[i]);
+            let returnObj = user.savedPaths[i];
+            returnObj.message = 'Path already saved';
+            return res.status(200).json(returnObj);
           }
         }
+        // If that id isn't already saved add it
         if(!alreadySaved){
           let newSavedPath = {path: pathId, hero: path.hero, title: path.title};
           User.findOneAndUpdate({_id : id}, {$push: {savedPaths: newSavedPath}}, {new: true}, (err, doc) => {
