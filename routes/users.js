@@ -2,9 +2,9 @@
 
 const express = require('express');
 const router = express.Router();
-const passport = require('passport');
 
 const User = require('../models/user');
+
 
 // Should be protected or removed in production
 // GET all users
@@ -38,20 +38,5 @@ router.get('/id/:id', (req, res, next) => {
       next(err);
     });
 });
-
-router.post('/addpath/:id', (req, res, next) => {
-  const {id} = req.params;
-  // const userId = req.user.id;
-  const { path } = req.body;
-  User.findById(id)
-    .then(user => {
-      // let saved = user.savedPaths;
-      console.log(user)
-      user.savedPaths = [...user.savedPaths, {path}];
-      return user.save()
-    })
-    .then(user => res.json(user))
-    .catch(err => next(err))
-})
 
 module.exports = router;

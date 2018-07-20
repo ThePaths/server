@@ -4,10 +4,7 @@ const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
 
-
 const passport = require('passport');
-const localStrategy = require('../passport/local');
-const jwtStrategy = require('../passport/jwt');
 
 const { JWT_SECRET, JWT_EXPIRY } = require('../config');
 
@@ -16,6 +13,7 @@ const User = require('../models/user');
 const options = { session: false, failWithError: true };
 
 const localAuth = passport.authenticate('local', options);
+const jwtAuth = passport.authenticate('jwt', {session: false});
 
 function createAuthToken (user) {
   return jwt.sign({ user }, JWT_SECRET, {
@@ -52,7 +50,10 @@ router.post('/register', (req, res) => {
       return User.create({
         email,
         username,
-        password: hash
+        password: hash,
+        savedPaths: [],
+        currentPaths: [],
+        completedPaths: [],
       });
     })
     .then(user => {
@@ -66,9 +67,7 @@ router.post('/register', (req, res) => {
       }
       res.status(500).json({code: 500, message: 'Internal server error'});
     });
-})
-
-const jwtAuth = passport.authenticate('jwt', { session: false, failWithError: true });
+});
 
 router.post('/refresh', jwtAuth, (req, res) => {
   const authToken = createAuthToken(req.user);
