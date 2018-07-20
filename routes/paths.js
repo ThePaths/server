@@ -21,13 +21,13 @@ router.get('/', (req, res, next) => {
 
 // GET one path by Id
 router.get('/:pathId', (req, res, next) => {
-  const pathId = req.params.id;
+  const {pathId} = req.params;
   if(!ObjectId.isValid(pathId)){
     const err = new Error('Provided pathId is not a valid ObjectId');
-    err.status(400);
+    err.status = 400;
     return next(err);
   }
-  Path.findById()
+  Path.findById(pathId)
     .then(path => {
       if(path){
         res.json(path);
@@ -50,7 +50,7 @@ router.post('/save', jwtAuth, (req, res, next) => {
   let alreadySaved = false;
   if(!ObjectId.isValid(pathId)){
     const err = new Error('Provided pathId is not a valid ObjectId');
-    err.status(400);
+    err.status = 400;
     return next(err);
   }
   console.log(username);
@@ -131,7 +131,7 @@ router.post('/start', jwtAuth, (req, res, next) => {
   const { pathId } = req.body;
   if(!ObjectId.isValid(pathId)){
     const err = new Error('Provided pathId is not a valid ObjectId');
-    err.status(400);
+    err.status = 400;
     return next(err);
   }
   console.log(username);
@@ -172,14 +172,13 @@ router.post('/start', jwtAuth, (req, res, next) => {
 });
 
 router.post('/display', jwtAuth, (req, res, next) => {
-  const { id, username } = req.user;
+  const { id } = req.user;
   const { pathId } = req.body;
   if(!ObjectId.isValid(pathId)){
     const err = new Error('Provided pathId is not a valid ObjectId');
-    err.status(400);
+    err.status = 400;
     return next(err);
   }
-  console.log(username);
   Path.findById(pathId)
     .then(path => {
       if(!path){
@@ -196,15 +195,6 @@ router.post('/display', jwtAuth, (req, res, next) => {
       User.findByIdAndUpdate(id, {$set: {displayPath: newDisplay}}, {new: true})
         .then(user => res.json(user))
         .catch(err => console.log(err));
-        // if(err){
-        //   Promise.reject({
-        //     code: 500,
-        //     reason: 'Internal Server Error',
-        //     message: 'Failed to updated user with new saved path',
-        //   });
-        // } else {
-        //   res.json(doc);
-        // }
     })
     .catch((err)=>{
       next(err);
