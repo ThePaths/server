@@ -18,7 +18,7 @@ router.get('/', (req, res, next) => {
 });
 
 // GET user by username
-router.get('/username/:username', (req, res, next) => {
+router.get('/:username', (req, res, next) => {
   User.find({username: req.params.username})
     .then(result => {
       res.json(result);
