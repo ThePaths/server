@@ -15,7 +15,9 @@ const userSchema = mongoose.Schema({
     description: String,
     videos: [{
       videoId: String,
-    }]
+      replit: String
+    }],
+    index: {type: Number, default: 0}
   }
 });
 
