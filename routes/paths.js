@@ -38,9 +38,11 @@ router.post('/save', jwtAuth, (req, res, next) => {
           message: `Could not find path with id ${pathId}`,
         });
       }
+      return path;
     })
-    .then(() => {
-      User.findByIdAndUpdate(id, {$push: {savedPaths: pathId}}, {new: true}, (err, doc) => {
+    .then((path) => {
+      let newSavedPath = {path: pathId, hero: path.hero, title: path.title};
+      User.findByIdAndUpdate(id, {$push: {savedPaths: newSavedPath}}, {new: true}, (err, doc) => {
         if(err){
           Promise.reject({
             code: 500,
