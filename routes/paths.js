@@ -45,7 +45,7 @@ router.get('/:pathId', (req, res, next) => {
 // POST a new saved path to a currently logged in user
 // req.body must contain key "pathId" with MongoDB ObjectId as it's value
 router.post('/save', jwtAuth, (req, res, next) => {
-  const { id, username } = req.user;
+  const { id } = req.user;
   const { pathId } = req.body;
   let alreadySaved = false;
   if(!ObjectId.isValid(pathId)){
@@ -53,7 +53,6 @@ router.post('/save', jwtAuth, (req, res, next) => {
     err.status = 400;
     return next(err);
   }
-  console.log(username);
   Path.findById(pathId)
     .then(path => {
       if(!path){
@@ -78,27 +77,21 @@ router.post('/save', jwtAuth, (req, res, next) => {
         for(let i = 0; i < user.completedPaths.length; i++){
           if(user.completedPaths[i].path.toString() === pathId){
             alreadySaved = true;
-            let returnObj = user.completedPaths[i];
-            returnObj.message = 'Path already completed';
-            return res.status(200).json(returnObj);
+            return res.status(200).json({message : 'Path already completed'});
           }
         }
         // Check path isn't already in current
         for(let i = 0; i < user.currentPaths.length; i++){
           if(user.currentPaths[i].path.toString() === pathId){
             alreadySaved = true;
-            let returnObj = user.currentPaths[i];
-            returnObj.message = 'Path already in progress';
-            return res.status(200).json(returnObj);
+            return res.status(200).json({message : 'Path already in progress'});
           }
         }
         // Check that path isn't already saved
         for(let i = 0; i < user.savedPaths.length; i++){
           if(user.savedPaths[i].path.toString() === pathId){
             alreadySaved = true;
-            let returnObj = user.savedPaths[i];
-            returnObj.message = 'Path already saved';
-            return res.status(200).json(returnObj);
+            return res.status(200).json({message : 'Path already saved'});
           }
         }
         // If that id isn't already saved add it
@@ -112,7 +105,7 @@ router.post('/save', jwtAuth, (req, res, next) => {
                 message: 'Failed to updated user with new saved path',
               });
             } else {
-              return res.status(201).json(doc.savedPaths[doc.savedPaths.length-1]);
+              return res.status(201).json({message: 'Path added to saved paths'});
             }
           });
         }
@@ -125,16 +118,15 @@ router.post('/save', jwtAuth, (req, res, next) => {
 
 // POST a new path to set as in progress to logged in user
 // req.body must contain key "pathId" with MongoDB ObjectId as it's value
-// Checks if recieved pathId is a saved path and removes it if so <---- NEED TO ADD THIS
+// Checks if recieved pathId is a saved path and removes it if so
 router.post('/start', jwtAuth, (req, res, next) => {
-  const { id, username } = req.user;
+  const { id } = req.user;
   const { pathId } = req.body;
   if(!ObjectId.isValid(pathId)){
     const err = new Error('Provided pathId is not a valid ObjectId');
     err.status = 400;
     return next(err);
   }
-  console.log(username);
   Path.findById(pathId)
     .then(path => {
       if(!path){
@@ -147,23 +139,46 @@ router.post('/start', jwtAuth, (req, res, next) => {
       return path;
     })
     .then((path) => {
-      let newCurrentPath = {
-        path: pathId, 
-        hero: path.hero, 
-        title: path.title, 
-        totalVideos: path.videos.length, 
-        currentVideoIndex: 0,
-      };
-      User.findByIdAndUpdate(id, {$push: {currentPaths: {$each: [newCurrentPath], $position: 0}}}, {new: true}, (err, doc) => {
+      User.findById(id, (err, user) => {
         if(err){
           Promise.reject({
-            code: 500,
-            reason: 'Internal Server Error',
-            message: 'Failed to updated user with new saved path',
+            code: 400,
+            reason: 'Bad Request',
+            message: `Failed to find user with id ${id}`
           });
-        } else {
-          res.json(doc.currentPaths);
         }
+        // Check path isn't alredy in completed
+        for(let i = 0; i < user.completedPaths.length; i++){
+          if(user.completedPaths[i].path.toString() === pathId){
+            return res.status(200).json({message : 'Path already completed'});
+          }
+        }
+        // Check path isn't already in current
+        for(let i = 0; i < user.currentPaths.length; i++){
+          if(user.currentPaths[i].path.toString() === pathId){
+            return res.status(200).json({message : 'Path already in progress'});
+          }
+        }
+        // Check that path isn't already saved, remove if so
+        for(let i = 0; i < user.savedPaths.length; i++){
+          if(user.savedPaths[i].path.toString() === pathId){
+            user.savedPaths.splice(i, 1);
+          }
+        }
+
+        let newCurrentPath = {
+          path: pathId, 
+          hero: path.hero, 
+          title: path.title, 
+          totalVideos: path.videos.length, 
+          currentVideoIndex: 0,
+        };
+
+        user.currentPaths.push(newCurrentPath);
+
+        user.save(() => {
+          return res.status(201).json({message: 'Path started'});
+        });
       });
     })
     .catch((err)=>{
