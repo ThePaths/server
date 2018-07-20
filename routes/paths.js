@@ -9,6 +9,7 @@ const User = require('../models/user');
 
 const jwtAuth = passport.authenticate('jwt', { session: false, failWithError: true });
 
+// GET all paths
 router.get('/', (req, res, next) => {
   Path.find()
     .sort('title')
@@ -18,7 +19,7 @@ router.get('/', (req, res, next) => {
     .catch(err => next(err));
 });
 
-// Get single path by Id
+// GET one path by Id
 router.get('/:pathId', (req, res, next) => {
   const pathId = req.params.id;
   if(!ObjectId.isValid(pathId)){
@@ -46,6 +47,7 @@ router.get('/:pathId', (req, res, next) => {
 router.post('/save', jwtAuth, (req, res, next) => {
   const { id, username } = req.user;
   const { pathId } = req.body;
+  let alreadySaved = false;
   if(!ObjectId.isValid(pathId)){
     const err = new Error('Provided pathId is not a valid ObjectId');
     err.status = 400;
@@ -63,17 +65,33 @@ router.post('/save', jwtAuth, (req, res, next) => {
       }
       return path;
     })
-    .then((path) => {
-      let newSavedPath = {path: pathId, hero: path.hero, title: path.title};
-      User.findByIdAndUpdate(id, {$push: {savedPaths: newSavedPath}}, {new: true}, (err, doc) => {
+    .then(path => {
+      User.findById(id, (err, user) => {
         if(err){
           Promise.reject({
             code: 500,
-            reason: 'Internal Server Error',
-            message: 'Failed to updated user with new saved path',
+            message: `Failed to find user with id ${id}`
           });
-        } else {
-          res.json(doc);
+        }
+        for(let i = 0; i < user.savedPaths.length; i++){
+          if(user.savedPaths[i].path.toString() === pathId){
+            alreadySaved = true;
+            return res.status(201).json(user.savedPaths[i]);
+          }
+        }
+        if(!alreadySaved){
+          let newSavedPath = {path: pathId, hero: path.hero, title: path.title};
+          User.findOneAndUpdate({_id : id}, {$push: {savedPaths: newSavedPath}}, {new: true}, (err, doc) => {
+            if(err){
+              Promise.reject({
+                code: 500,
+                reason: 'Internal Server Error',
+                message: 'Failed to updated user with new saved path',
+              });
+            } else {
+              return res.status(201).json(doc.savedPaths[doc.savedPaths.length-1]);
+            }
+          });
         }
       });
     })
@@ -111,7 +129,7 @@ router.post('/start', jwtAuth, (req, res, next) => {
         hero: path.hero, 
         title: path.title, 
         totalVideos: path.videos.length, 
-        index: 0,
+        currentVideoIndex: 0,
       };
       User.findByIdAndUpdate(id, {$push: {currentPaths: {$each: [newCurrentPath], $position: 0}}}, {new: true}, (err, doc) => {
         if(err){
