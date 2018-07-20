@@ -18,6 +18,7 @@ router.get('/', (req, res, next) => {
     .catch(err => next(err));
 });
 
+
 // UNTESTED
 // POST a new saved path to a currently logged in user
 // req.body must contain key "pathId" with MongoDB ObjectId as it's value
@@ -63,7 +64,7 @@ router.post('/save', jwtAuth, (req, res, next) => {
 // UNTESTED
 // POST a new path to set as in progress to logged in user
 // req.body must contain key "pathId" with MongoDB ObjectId as it's value
-// Checks if recieved pathId is a saved path and removes it if so
+// Checks if recieved pathId is a saved path and removes it if so <---- NEED TO ADD THIS
 router.post('/start', jwtAuth, (req, res, next) => {
   const { id, username } = req.user;
   const { pathId } = req.body;
@@ -85,7 +86,13 @@ router.post('/start', jwtAuth, (req, res, next) => {
       return path;
     })
     .then((path) => {
-      let newCurrentPath = {path: pathId, hero: path.hero, title: path.title};
+      let newCurrentPath = {
+        path: pathId, 
+        hero: path.hero, 
+        title: path.title, 
+        totalVideos: path.videos.length, 
+        index: 0,
+      };
       User.findByIdAndUpdate(id, {$push: {currentPaths: {$each: [newCurrentPath], $position: 0}}}, {new: true}, (err, doc) => {
         if(err){
           Promise.reject({
@@ -140,6 +147,6 @@ router.post('/display', jwtAuth, (req, res, next) => {
     .catch((err)=>{
       next(err);
     });
-})
+});
 
 module.exports = router;
