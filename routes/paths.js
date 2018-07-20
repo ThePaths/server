@@ -1,16 +1,13 @@
-'use strict';
-
 const express = require('express');
 const router = express.Router();
-const passport = require('passport');
 
-const User = require('../models/user');
+const Path = require('../models/path');
 
 router.get('/', (req, res, next) => {
-  User.find()
-    .sort('name')
-    .then(results => {
-      res.json(results);
+  Path.find()
+    .sort('title')
+    .then(paths => {
+      res.json(paths);
     })
     .catch(err => next(err));
 });

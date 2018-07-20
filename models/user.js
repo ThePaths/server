@@ -1,4 +1,3 @@
-'use strict';
 
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
@@ -6,7 +5,10 @@ const bcrypt = require('bcryptjs');
 const userSchema = mongoose.Schema({
   email: {type: String, required: true},
   username: {type: String, required: true},
-  password: {type: String, required: true}
+  password: {type: String, required: true},
+  savedPaths: [{path: mongoose.Schema.Types.ObjectId}],
+  currentPaths: [{path: mongoose.Schema.Types.ObjectId, index: Number}],
+  completedPaths: [{path: mongoose.Schema.Types.ObjectId}],
 });
 
 userSchema.set('toObject', {
@@ -14,7 +16,6 @@ userSchema.set('toObject', {
     ret.id = ret._id;
     delete ret._id;
     delete ret.__v;
-    delete ret.password;
   }
 });
 
