@@ -39,4 +39,19 @@ router.get('/id/:id', (req, res, next) => {
     });
 });
 
+router.post('/addpath/:id', (req, res, next) => {
+  const {id} = req.params;
+  // const userId = req.user.id;
+  const { path } = req.body;
+  User.findById(id)
+    .then(user => {
+      // let saved = user.savedPaths;
+      console.log(user)
+      user.savedPaths = [...user.savedPaths, {path}];
+      return user.save()
+    })
+    .then(user => res.json(user))
+    .catch(err => next(err))
+})
+
 module.exports = router;
