@@ -23,10 +23,10 @@ router.get('/:pathId', (req, res, next) => {
   const pathId = req.params.id;
   if(!ObjectId.isValid(pathId)){
     const err = new Error('Provided pathId is not a valid ObjectId');
-    err.status(400);
+    err.status = 400;
     return next(err);
   }
-  Path.findById()
+  Path.findById(pathId)
     .then(path => {
       if(path){
         res.json(path);
@@ -48,7 +48,7 @@ router.post('/save', jwtAuth, (req, res, next) => {
   const { pathId } = req.body;
   if(!ObjectId.isValid(pathId)){
     const err = new Error('Provided pathId is not a valid ObjectId');
-    err.status(400);
+    err.status = 400;
     return next(err);
   }
   console.log(username);
@@ -90,7 +90,7 @@ router.post('/start', jwtAuth, (req, res, next) => {
   const { pathId } = req.body;
   if(!ObjectId.isValid(pathId)){
     const err = new Error('Provided pathId is not a valid ObjectId');
-    err.status(400);
+    err.status = 400;
     return next(err);
   }
   console.log(username);
@@ -135,7 +135,7 @@ router.post('/display', jwtAuth, (req, res, next) => {
   const { pathId } = req.body;
   if(!ObjectId.isValid(pathId)){
     const err = new Error('Provided pathId is not a valid ObjectId');
-    err.status(400);
+    err.status = 400;
     return next(err);
   }
   console.log(username);
