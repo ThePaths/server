@@ -125,17 +125,18 @@ router.post('/display', jwtAuth, (req, res, next) => {
     })
     .then((path) => {
       let newDisplay = {path: pathId, title: path.title, description: path.description, videos: path.videos};
-      User.findByIdAndUpdate(id, {$set: {displayPath: newDisplay}}, {new: true}, (err, doc) => {
-        if(err){
-          Promise.reject({
-            code: 500,
-            reason: 'Internal Server Error',
-            message: 'Failed to updated user with new saved path',
-          });
-        } else {
-          res.json(doc);
-        }
-      });
+      User.findByIdAndUpdate(id, {$set: {displayPath: newDisplay}}, {new: true})
+        .then(user => res.json(user))
+        .catch(err => console.log(err));
+        // if(err){
+        //   Promise.reject({
+        //     code: 500,
+        //     reason: 'Internal Server Error',
+        //     message: 'Failed to updated user with new saved path',
+        //   });
+        // } else {
+        //   res.json(doc);
+        // }
     })
     .catch((err)=>{
       next(err);
