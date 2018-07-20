@@ -2,9 +2,9 @@
 
 const express = require('express');
 const router = express.Router();
-const passport = require('passport');
 
 const User = require('../models/user');
+
 
 // Should be protected or removed in production
 // GET all users
@@ -38,5 +38,6 @@ router.get('/id/:id', (req, res, next) => {
       next(err);
     });
 });
+
 
 module.exports = router;
