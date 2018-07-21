@@ -42,8 +42,42 @@ router.get('/:pathId', (req, res, next) => {
     .catch(err => next(err));
 });
 
+// GET data about a user's current path
+router.get('/u/:pathId', jwtAuth, (req, res, next) => {
+  const { id } = req.user;
+  const { pathId } = req.params;
+  if(!ObjectId.isValid(pathId)){
+    const err = new Error('Provided pathId is not a valid ObjectId');
+    err.status = 400;
+    return next(err);
+  }
+  User.findById(id)
+    .then(user => {
+      let returnPath = {};
+      for(let i = 0; i < user.currentPaths.length; i++){
+        if(user.currentPaths[i].path.toString() === pathId){
+          returnPath.currentVideoIndex = user.currentPaths[i].currentVideoIndex;
+          returnPath.totalVideos = user.currentPaths[i].totalVideos;
+          break;
+        }
+      }
+      Path.findById(pathId, (err, doc) => {
+        // Add err handling
+        returnPath.videos = doc.videos;
+        returnPath.title = doc.title;
+        returnPath.pathCreator = doc.pathCreator;
+        return res.json(returnPath);
+      });
+    })
+    .catch(err => {
+      next(err);
+    });
+});
+
 // POST a new saved path to a currently logged in user
 // req.body must contain key "pathId" with MongoDB ObjectId as it's value
+// Checks that recieved path isn't already saved, current, or complete
+//    if so, respond with status 200(OK) and a message  
 router.post('/save', jwtAuth, (req, res, next) => {
   const { id } = req.user;
   const { pathId } = req.body;
@@ -156,6 +190,8 @@ router.post('/start', jwtAuth, (req, res, next) => {
         // Check path isn't already in current
         for(let i = 0; i < user.currentPaths.length; i++){
           if(user.currentPaths[i].path.toString() === pathId){
+            let foundPath = user.currentPaths.splice(i, 1);
+            user.currentPaths.unshift(foundPath);
             return res.status(200).json({message : 'Path already in progress'});
           }
         }
@@ -174,7 +210,7 @@ router.post('/start', jwtAuth, (req, res, next) => {
           currentVideoIndex: 0,
         };
 
-        user.currentPaths.push(newCurrentPath);
+        user.currentPaths.unshift(newCurrentPath);
 
         user.save(() => {
           return res.status(201).json({message: 'Path started'});
@@ -185,6 +221,8 @@ router.post('/start', jwtAuth, (req, res, next) => {
       next(err);
     });
 });
+
+
 
 router.post('/display', jwtAuth, (req, res, next) => {
   const { id } = req.user;
