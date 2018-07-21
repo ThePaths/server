@@ -74,6 +74,25 @@ router.get('/u/:pathId', jwtAuth, (req, res, next) => {
     });
 });
 
+router.post('/nextVideo', jwtAuth, (req, res, next) => {
+  const { id } = req.user;
+  const { pathId } = req.body;
+  User.findById(id, (err, user) => {
+    if(err){
+      next(err);
+    }
+    for(let i = 0; i < user.currentPaths.length; i++){
+      if(user.currentPaths[i].path.toString() === pathId){
+        user.currentPaths[i].currentVideoIndex = user.currentPaths[i].currentVideoIndex + 1; 
+        return user.save(() => {
+          res.status(201).json({message: 'Incremented index'});
+        });
+      }
+    }
+    return res.status(200).json({message: 'Recieved path is not a current path of user'});
+  });
+});
+
 // POST a new saved path to a currently logged in user
 // req.body must contain key "pathId" with MongoDB ObjectId as it's value
 // Checks that recieved path isn't already saved, current, or complete
