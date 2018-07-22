@@ -5,20 +5,7 @@ const bcrypt = require('bcryptjs');
 const userSchema = mongoose.Schema({
   email: {type: String, required: true},
   username: {type: String, required: true},
-  password: {type: String, required: true},
-  savedPaths: [{path: mongoose.Schema.Types.ObjectId, title: String, hero: String},{unique: true}],
-  currentPaths: [{path: mongoose.Schema.Types.ObjectId, currentVideoIndex: Number, totalVideos: Number, title: String, hero: String},{unique: true}],
-  completedPaths: [{path: mongoose.Schema.Types.ObjectId, title: String, hero: String},{unique: true}],
-  displayPath: {
-    path: mongoose.Schema.Types.ObjectId,
-    title: String,
-    description: String,
-    videos: [{
-      videoId: String,
-      replit: String
-    }],
-    index: {type: Number, default: 0}
-  }
+  password: {type: String, required: true}
 });
 
 userSchema.set('toObject', {

@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const { DATABASE_URL } = require('../config');
 
 const Paths = require('../models/path');
-const seedPaths = require('../db/seed/questions');
+const seedPaths = require('../db/seed/paths');
 
 mongoose.connect(DATABASE_URL)
   .then(() => {

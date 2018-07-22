@@ -6,7 +6,7 @@ const { DATABASE_URL } = require('../config');
 const Paths = require('../models/path');
 const User = require('../models/user');
 
-const seedPaths = require('../db/seed/questions');
+const seedPaths = require('../db/seed/paths');
 const seedUsers = require('../db/seed/users');
 
 mongoose.connect(DATABASE_URL)
