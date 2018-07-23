@@ -15,48 +15,49 @@ router.get('/', (req, res, next) => {
   const userId = req.user.id;
   UserPaths.find({ userId })
     .then(results => {
-      res.json(results);
+      res.json(results[0]);
     })
     .catch(err => next(err));
 });
 
-router.post('/', (req, res, next) => {
+router.put('/save', (req, res, next) => {
   const userId = req.user.id;
-  const paths = {
-    displayPath: {
-      index: 0,
-      videos: []
-    },
-    savedPaths: [],
-    currentPaths: [],
-    completedPaths: [],
-    userId
-  };
-  UserPaths.create(paths)
-    .then(result => {
-      res.location(`${req.originalUrl}/${result.id}`)
-        .status(201)
-        .json(result);
-    })
-    .catch(err => next(err));
-});
-
-router.put('/:id', (req, res, next) => {
-  const { id } = req.params;
   const { pathId } = req.body;
 
-  Path.findById(pathId)
-    .then(path => {
-      return path;
+  UserPaths.find({ userId })
+    .then(user => {
+      Path.findById(pathId, (err, newPath) => {
+        user[0].savedPaths.push(newPath);
+        user[0].save();
+      });
+      return user[0];
     })
-    .then(path => {
-      return UserPaths.findById(id, (err, paths) => {
-        paths.savedPaths.push(path)
-        paths.save();
-      })
+    .then(result => {
+      console.log(result);
+      res.json(result);
     })
-    .then(result => res.json(result))
     .catch(err => next(err));
-})
+});
+
+router.put('/display', (req, res, next) => {
+  const userId = req.user.id;
+  const {pathId} = req.body;
+
+  UserPaths.find({userId})
+    .then(user => {
+      Path.findById(pathId, (err, newPath) => {
+        console.log(newPath);
+        const display = {index: 0, title: newPath.title, description: newPath.description, videos: newPath.videos};
+        user[0].displayPath = display;
+        user[0].save();
+      });
+      return user[0];
+    })
+    .then(result => {
+      console.log('new: ',result);
+      res.json(result);
+    })
+    .catch(err => next(err));
+});
 
 module.exports = router;

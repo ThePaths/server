@@ -9,6 +9,7 @@ const passport = require('passport');
 const { JWT_SECRET, JWT_EXPIRY } = require('../config');
 
 const User = require('../models/user');
+const UserPaths = require('../models/userPaths');
 
 const options = { session: false, failWithError: true };
 
@@ -50,15 +51,32 @@ router.post('/register', (req, res) => {
       return User.create({
         email,
         username,
-        password: hash,
+        password: hash
+      });
+    })
+    // .then(user => {
+    //   return res.status(201).json(user);
+    // })
+    .then(user => {
+      console.log(user)
+      const paths = {
+        displayPath: {
+          index: 0,
+          videos: []
+        },
         savedPaths: [],
         currentPaths: [],
         completedPaths: [],
-      });
+        userId: user.id
+      };
+      UserPaths.create(paths);
+      return res.status(201).json(user)
     })
-    .then(user => {
-      return res.status(201).json(user);
-    })
+    // .then(result => {
+    //   res.location(`${req.originalUrl}/${result.id}`)
+    //     .status(201)
+    //     .json(result);
+    // })
     .catch(err => {
       // Forward validation errors on to the client, otherwise give a 500
       // error because something unexpected has happened
