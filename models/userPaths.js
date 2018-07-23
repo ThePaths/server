@@ -2,7 +2,7 @@
 const mongoose = require('mongoose');
 
 const userPathsSchema = mongoose.Schema({
-  savedPaths: [{path: mongoose.Schema.Types.ObjectId, title: String, hero: String},{unique: true}],
+  savedPaths: [{path: mongoose.Schema.Types.ObjectId, title: String, hero: String},{unique: true}], // get path as _id
   currentPaths: [{path: mongoose.Schema.Types.ObjectId, currentVideoIndex: Number, totalVideos: Number, title: String, hero: String},{unique: true}],
   completedPaths: [{path: mongoose.Schema.Types.ObjectId, title: String, hero: String},{unique: true}],
   displayPath: {
