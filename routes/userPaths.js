@@ -27,8 +27,17 @@ router.put('/save', (req, res, next) => {
   UserPaths.find({ userId })
     .then(user => {
       Path.findById(pathId, (err, newPath) => {
-        user[0].savedPaths.push(newPath);
-        user[0].save();
+        let duplicate = false;
+        for(let i = 0; i < user[0].savedPaths.length; i++){
+          if(user[0].savedPaths[i]._id.toString() === pathId){
+            duplicate = true;
+            break;
+          }
+        }
+        if(!duplicate){
+          user[0].savedPaths.push(newPath);
+          user[0].save();
+        }
       });
       return user[0];
     })

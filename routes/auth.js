@@ -58,7 +58,7 @@ router.post('/register', (req, res) => {
     //   return res.status(201).json(user);
     // })
     .then(user => {
-      console.log(user)
+      console.log(user);
       const paths = {
         displayPath: {
           index: 0,
@@ -70,7 +70,7 @@ router.post('/register', (req, res) => {
         userId: user.id
       };
       UserPaths.create(paths);
-      return res.status(201).json(user)
+      return res.status(201).json(user);
     })
     // .then(result => {
     //   res.location(`${req.originalUrl}/${result.id}`)
