@@ -5,19 +5,16 @@ const passport = require('passport');
 const ObjectId = require('mongoose').Types.ObjectId;
 
 const Path = require('../models/path');
-const User = require('../models/user');
 const UserPath = require('../models/userPath');
-const Creator = require('../models/creator');
+const Creator = require('../models/creator'); // Used by populate
 const Video = require('../models/video'); // Used by populate
 
 const jwtAuth = passport.authenticate('jwt', { session: false, failWithError: true });
 
-
-
 router.get('/:pathId', jwtAuth, (req, res, next) => {
   const { id } = req.user;
   const { pathId } = req.params;
-
+  
   // Validate
   if(!ObjectId.isValid(pathId)){
     const err = new Error('Provided pathId is not a valid ObjectId');
@@ -96,33 +93,6 @@ router.get('/:pathId', jwtAuth, (req, res, next) => {
     .catch(err => {
       next(err);
     });
-    
-
-
-
-
-
-  // User.findById(id)
-  //   .then(user => {
-  //     let returnPath = {};
-  //     for(let i = 0; i < user.currentPaths.length; i++){
-  //       if(user.currentPaths[i].path.toString() === pathId){
-  //         returnPath.currentVideoIndex = user.currentPaths[i].currentVideoIndex;
-  //         returnPath.totalVideos = user.currentPaths[i].totalVideos;
-  //         break;
-  //       }
-  //     }
-  //     Path.findById(pathId, (err, doc) => {
-  //       // Add err handling
-  //       returnPath.videos = doc.videos;
-  //       returnPath.title = doc.title;
-  //       returnPath.pathCreator = doc.pathCreator;
-  //       return res.json(returnPath);
-  //     });
-  //   })
-  //   .catch(err => {
-  //     next(err);
-  //   });
 });
 
 module.exports = router;

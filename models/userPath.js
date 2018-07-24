@@ -6,7 +6,7 @@ const userPathSchema = mongoose.Schema({
   savedPaths: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Path' }],
   completedPaths: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Path' }],
   currentPaths: [{
-    pathId: {type: mongoose.Schema.Types.ObjectId, ref: 'Path'}, 
+    path: {type: mongoose.Schema.Types.ObjectId, ref: 'Path'}, 
     completedVideos: [Boolean], 
     lastVideoIndex: Number, 
   }],
