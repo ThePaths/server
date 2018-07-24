@@ -1,24 +1,18 @@
 'use strict';
 const mongoose = require('mongoose');
 
-const userPathsSchema = mongoose.Schema({
-  savedPaths: [{path: mongoose.Schema.Types.ObjectId, title: String, hero: String},{unique: true}], // get path as _id
-  currentPaths: [{path: mongoose.Schema.Types.ObjectId, currentVideoIndex: Number, totalVideos: Number, title: String, hero: String},{unique: true}],
-  completedPaths: [{path: mongoose.Schema.Types.ObjectId, title: String, hero: String},{unique: true}],
-  displayPath: {
-    path: mongoose.Schema.Types.ObjectId,
-    title: String,
-    description: String,
-    videos: [{
-      videoId: String,
-      replit: String
-    }],
-    index: {type: Number, default: 0}
-  },
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }
+const userPathSchema = mongoose.Schema({
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  savedPaths: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Path' }],
+  completedPaths: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Path' }],
+  currentPaths: [{
+    pathId: {type: mongoose.Schema.Types.ObjectId, ref: 'Path'}, 
+    completedVideos: [Boolean], 
+    lastVideoIndex: Number, 
+  }],
 });
 
-userPathsSchema.set('toObject', {
+userPathSchema.set('toObject', {
   transform: function (doc, ret) {
     ret.id = ret._id;
     delete ret._id;
@@ -26,4 +20,4 @@ userPathsSchema.set('toObject', {
   }
 });
 
-module.exports = mongoose.model('UserPaths', userPathsSchema)
+module.exports = mongoose.model('UserPath', userPathSchema);
