@@ -12,12 +12,20 @@ const jwtAuth = passport.authenticate('jwt', { session: false, failWithError: tr
 // GET all paths
 router.get('/', (req, res, next) => {
   Path.find()
-    .sort('title')
     .then(paths => {
       res.json(paths);
     })
     .catch(err => next(err));
 });
+
+router.get('/guest', (req, res, next) => {
+  Path.find()
+    .limit(3)
+    .then(paths => {
+      res.json(paths);
+    })
+    .catch(err => next(err));
+})
 
 // GET one path by Id
 router.get('/:pathId', (req, res, next) => {
