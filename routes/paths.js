@@ -21,6 +21,19 @@ router.get('/', (req, res, next) => {
     })
     .catch(err => next(err));
 });
+ 
+router.get('/guest', (req, res, next) => {
+  Path.find()
+    .limit(2) // Updated to 3 when more paths are added
+    .populate('videos')
+    .then(paths => {
+      paths[0].videos.pop();
+      paths[1].videos.pop();
+      //paths[2].videos.pop();
+      res.json(paths);
+    })
+    .catch(err => next(err));
+});
 
 // GET one path by Id with populated video data and semi-populated creator data
 router.get('/:pathId', (req, res, next) => {
