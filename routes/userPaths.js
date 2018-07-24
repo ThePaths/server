@@ -4,7 +4,7 @@ const router = express.Router();
 
 const passport = require('passport');
 
-const UserPaths = require('../models/userPaths');
+const UserPaths = require('../models/userPath');
 const Path = require('../models/path');
 const User = require('../models/user');
 

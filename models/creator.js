@@ -5,7 +5,7 @@ const creatorSchema = mongoose.Schema({
   name: {type: String, required: true},
   paths: [{type:mongoose.Schema.Types.ObjectId, ref: 'Path'}],
   videos: [{type:mongoose.Schema.Types.ObjectId, ref: 'Video'}],
-  user: {type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null},
+  userId: {type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null},
   youtube: {type: String, default:''},
   pateron: {type: String, default:''},
   twitter: {type: String, default:''},
