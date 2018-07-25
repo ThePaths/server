@@ -61,6 +61,7 @@ router.get('/:pathId', (req, res, next) => {
 });
 
 // GET data about a path with populated video data and user's progress
+// DEPRICATE 
 router.get('/u/:pathId', jwtAuth, (req, res, next) => {
   const { id } = req.user;
   const { pathId } = req.params;
@@ -297,15 +298,5 @@ router.post('/display', jwtAuth, (req, res, next) => {
     });
 });
 
-// Get the path overview if the user is logged in
-router.get('/overview/:id', jwtAuth, (req, res, next) => {
-  const { username } = req.user;
-  console.log(username);
-});
-
-// Get the path overview if no user is logged in
-router.get('/guest-overview/:id', (req, res, next) => {
-  console.log('no user');
-});
 
 module.exports = router;

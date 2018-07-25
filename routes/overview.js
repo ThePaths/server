@@ -15,7 +15,7 @@ router.get('/:pathId', jwtAuth, (req, res, next) => {
   const { id } = req.user;
   const { pathId } = req.params;
   
-  // Validate
+  // Validate, check if valid ObjectId
   if(!ObjectId.isValid(pathId)){
     const err = new Error('Provided pathId is not a valid ObjectId');
     err.status = 400;
@@ -71,18 +71,16 @@ router.get('/:pathId', jwtAuth, (req, res, next) => {
           });
         } else {
           for(let currPath of userpath.currentPaths){
-            if(currPath.pathId == pathId){
-              Object.assign(currPathObj, {status : 'current'});
+            if(currPath.path == pathId){
+              currPathObj.status = 'current';
               currPathObj.completedVideos = currPath.completedVideos;
               currPathObj.lastVideoIndex = currPath.lastVideoIndex;
-              console.log(currPathObj.status + '1');
               return res.status(200).json({
                 ...path.toObject(), 
                 ...currPathObj
               });
             }
           }
-          console.log('default return')
           return res.status(200).json({
             ...path.toObject(), 
             ...currPathObj
