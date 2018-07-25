@@ -7,7 +7,7 @@ const creatorSchema = mongoose.Schema({
   videos: [{type:mongoose.Schema.Types.ObjectId, ref: 'Video'}],
   userId: {type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null},
   youtube: {type: String, default:''},
-  pateron: {type: String, default:''},
+  patreon: {type: String, default:''},
   twitter: {type: String, default:''},
   website: {type: String, default:''},
 });

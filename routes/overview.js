@@ -30,6 +30,10 @@ router.get('/:pathId', jwtAuth, (req, res, next) => {
   Path.findById(pathId)
     .populate('videos')
     .populate('creator', 'name')
+    .populate({
+      path: 'videos',
+      populate: {path: 'creator', select: 'name'}
+    })
     .then(path => {
       if(!path){
         Promise.reject({
