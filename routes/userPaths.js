@@ -89,7 +89,7 @@ router.put('/start', (req, res, next) => {
         if(!duplicate){
           userpath.currentPaths.push({
             path: pathId,
-            completedVideos: [false, false],
+            completedVideos: Array(path.videos.length).fill(false),
             lastVideoIndex: 0
           });
           userpath.save();
@@ -108,30 +108,48 @@ router.put('/start', (req, res, next) => {
     });
 });
 
-
-
-
-
-
-router.put('/display', (req, res, next) => {
+router.put('/complete', (req, res, next) => {
   const userId = req.user.id;
-  const {pathId} = req.body;
+  const { pathId } = req.body;
 
-  UserPaths.find({userId})
-    .then(user => {
-      Path.findById(pathId, (err, newPath) => {
-        console.log(newPath);
-        const display = {index: 0, title: newPath.title, description: newPath.description, videos: newPath.videos};
-        user[0].displayPath = display;
-        user[0].save();
+  if(!ObjectId.isValid(pathId) || !ObjectId.isValid(userId)){
+    const err = new Error('Provided path Id or user Id is not a valid ObjectId');
+    err.status = 400;
+    return next(err);
+  }
+
+  UserPaths.findOne({userId})
+    .then(userpath => {
+      // This findById is to verify the path exists
+      Path.findById(pathId, (err, path) => {
+
+        // Add error and empty return handling
+
+        let duplicate = false;
+        for(let i = 0; i < userpath.completedPaths.length; i++){
+          if(userpath.completedPaths[i]._id.toString() === pathId){
+            duplicate = true;
+            break;
+          }
+        }
+        if(!duplicate){
+          userpath.completedPaths.push(pathId);
+          userpath.save();
+        }
+
+        // Add validation path is not current or completed
+
       });
-      return user[0];
+      return;
     })
-    .then(result => {
-      console.log('new: ',result);
-      res.json(result);
+    .then(() => {
+      res.status(202).send();
     })
-    .catch(err => next(err));
+    .catch(err => {
+      next(err);
+    });
 });
+
+
 
 module.exports = router;

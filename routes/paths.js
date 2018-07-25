@@ -62,47 +62,6 @@ router.get('/:pathId', (req, res, next) => {
     .catch(err => next(err));
 });
 
-// GET data about a path with populated video data and user's progress
-// DEPRICATE 
-router.get('/u/:pathId', jwtAuth, (req, res, next) => {
-  const { id } = req.user;
-  const { pathId } = req.params;
-
-  // Validate
-  if(!ObjectId.isValid(pathId)){
-    const err = new Error('Provided pathId is not a valid ObjectId');
-    err.status = 400;
-    return next(err);
-  }
-  if(!ObjectId.isValid(id)){
-    const err = new Error('Provided pathId is not a valid ObjectId');
-    err.status = 400;
-    return next(err);
-  }
-
-  User.findById(id)
-    .then(user => {
-      let returnPath = {};
-      for(let i = 0; i < user.currentPaths.length; i++){
-        if(user.currentPaths[i].path.toString() === pathId){
-          returnPath.currentVideoIndex = user.currentPaths[i].currentVideoIndex;
-          returnPath.totalVideos = user.currentPaths[i].totalVideos;
-          break;
-        }
-      }
-      Path.findById(pathId, (err, doc) => {
-        // Add err handling
-        returnPath.videos = doc.videos;
-        returnPath.title = doc.title;
-        returnPath.pathCreator = doc.pathCreator;
-        return res.json(returnPath);
-      });
-    })
-    .catch(err => {
-      next(err);
-    });
-});
-
 router.post('/nextVideo', jwtAuth, (req, res, next) => {
   const { id } = req.user;
   const { pathId } = req.body;
@@ -264,36 +223,6 @@ router.post('/start', jwtAuth, (req, res, next) => {
           return res.status(201).json({message: 'Path started'});
         });
       });
-    })
-    .catch((err)=>{
-      next(err);
-    });
-});
-
-router.post('/display', jwtAuth, (req, res, next) => {
-  const { id } = req.user;
-  const { pathId } = req.body;
-  if(!ObjectId.isValid(pathId)){
-    const err = new Error('Provided pathId is not a valid ObjectId');
-    err.status = 400;
-    return next(err);
-  }
-  Path.findById(pathId)
-    .then(path => {
-      if(!path){
-        Promise.reject({
-          code: 400,
-          reason: 'Bad Request',
-          message: `Could not find path with id ${pathId}`,
-        });
-      }
-      return path;
-    })
-    .then((path) => {
-      let newDisplay = {path: pathId, title: path.title, description: path.description, videos: path.videos};
-      User.findByIdAndUpdate(id, {$set: {displayPath: newDisplay}}, {new: true})
-        .then(user => res.json(user))
-        .catch(err => console.log(err));
     })
     .catch((err)=>{
       next(err);

@@ -22,7 +22,7 @@ router.get('/:pathId', jwtAuth, (req, res, next) => {
     return next(err);
   }
   if(!ObjectId.isValid(id)){
-    const err = new Error('Provided pathId is not a valid ObjectId');
+    const err = new Error('Provided userId is not a valid ObjectId');
     err.status = 400;
     return next(err);
   }
