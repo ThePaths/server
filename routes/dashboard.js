@@ -39,7 +39,7 @@ router.get('/completedpaths', jwtAuth, (req, res, next) => {
   UserPath.findOne({userId: req.user.id})
     .populate({path: 'completedPaths'})
     .then(userpath => {
-      res.json(userpath.savedPaths);
+      res.json(userpath.compltedPaths);
     })
     .catch(err => {
       next(err);
