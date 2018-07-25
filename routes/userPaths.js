@@ -59,29 +59,6 @@ router.put('/save', (req, res, next) => {
     .catch(err => {
       next(err);
     });
-
-  // UserPaths.find({ userId })
-  //   .then(user => {
-  //     Path.findById(pathId, (err, newPath) => {
-  //       let duplicate = false;
-  //       for(let i = 0; i < user[0].savedPaths.length; i++){
-  //         if(user[0].savedPaths[i]._id.toString() === pathId){
-  //           duplicate = true;
-  //           break;
-  //         }
-  //       }
-  //       if(!duplicate){
-  //         user[0].savedPaths.push(newPath);
-  //         user[0].save();
-  //       }
-  //     });
-  //     return user[0];
-  //   })
-  //   .then(result => {
-  //     console.log(result);
-  //     res.json(result);
-  //   })
-  //   .catch(err => next(err));
 });
 
 router.put('/display', (req, res, next) => {
