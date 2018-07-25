@@ -24,9 +24,20 @@ router.get('/keeplearning', jwtAuth, (req, res, next) => {
     });
 });
 
-router.get('/savedPaths', jwtAuth, (req, res, next) => {
+router.get('/savedpaths', jwtAuth, (req, res, next) => {
   UserPath.findOne({userId: req.user.id})
     .populate({path: 'savedPaths'})
+    .then(userpath => {
+      res.json(userpath.savedPaths);
+    })
+    .catch(err => {
+      next(err);
+    });
+});
+
+router.get('/completedpaths', jwtAuth, (req, res, next) => {
+  UserPath.findOne({userId: req.user.id})
+    .populate({path: 'completedPaths'})
     .then(userpath => {
       res.json(userpath.savedPaths);
     })
