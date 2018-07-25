@@ -32,9 +32,10 @@ router.put('/save', (req, res, next) => {
 
   UserPaths.findOne({userId})
     .then(userpath => {
+      // This findById is to verify the path exists
       Path.findById(pathId, (err, path) => {
 
-        // Add err and empty return handling
+        // Add error and empty return handling
 
         let duplicate = false;
         for(let i = 0; i < userpath.savedPaths.length; i++){
@@ -61,6 +62,57 @@ router.put('/save', (req, res, next) => {
     });
 });
 
+router.put('/start', (req, res, next) => {
+  const userId = req.user.id;
+  const { pathId } = req.body;
+
+  if(!ObjectId.isValid(pathId) || !ObjectId.isValid(userId)){
+    const err = new Error('Provided path Id or user Id is not a valid ObjectId');
+    err.status = 400;
+    return next(err);
+  }
+
+  UserPaths.findOne({userId})
+    .then(userpath => {
+      // This findById is to verify the path exists
+      Path.findById(pathId, (err, path) => {
+
+        // Add error and empty return handling
+
+        let duplicate = false;
+        for(let i = 0; i < userpath.currentPaths.length; i++){
+          if(userpath.currentPaths[i].path.toString() === pathId){
+            duplicate = true;
+            break;
+          }
+        }
+        if(!duplicate){
+          userpath.currentPaths.push({
+            path: pathId,
+            completedVideos: [false, false],
+            lastVideoIndex: 0
+          });
+          userpath.save();
+        }
+
+        // Add validation path is not current or completed
+
+      });
+      return;
+    })
+    .then(() => {
+      res.status(202).send();
+    })
+    .catch(err => {
+      next(err);
+    });
+});
+
+
+
+
+
+
 router.put('/display', (req, res, next) => {
   const userId = req.user.id;
   const {pathId} = req.body;
@@ -81,7 +133,5 @@ router.put('/display', (req, res, next) => {
     })
     .catch(err => next(err));
 });
-
-
 
 module.exports = router;

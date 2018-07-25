@@ -35,7 +35,7 @@ router.get('/savedPaths', jwtAuth, (req, res, next) => {
     });
 });
 
-router.get('/completedpaths', jwtAuth, (req, res, next) => {
+router.get('/completedPaths', jwtAuth, (req, res, next) => {
   UserPath.findOne({userId: req.user.id})
     .populate({path: 'completedPaths'})
     .then(userpath => {
@@ -45,7 +45,5 @@ router.get('/completedpaths', jwtAuth, (req, res, next) => {
       next(err);
     });
 });
-
-
 
 module.exports = router;
