@@ -24,7 +24,7 @@ router.get('/keeplearning', jwtAuth, (req, res, next) => {
     });
 });
 
-router.get('/savedpaths', jwtAuth, (req, res, next) => {
+router.get('/savedPaths', jwtAuth, (req, res, next) => {
   UserPath.findOne({userId: req.user.id})
     .populate({path: 'savedPaths'})
     .then(userpath => {
