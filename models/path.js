@@ -3,19 +3,12 @@
 const mongoose = require('mongoose');
 
 const pathSchema = mongoose.Schema({
-  title: {type: String, required: true, unique: true},
+  title: {type: String, required: true},
   hero: {type: String, required: true},
-  heroSize: {type: [Number]},
-  pathCreator: {type: String, required: true},
+  creator: {type: mongoose.Schema.Types.ObjectId, ref:'Creator', required: true},
   length: {type: Number, required: true},
   description: {type: String, required: true}, 
-  videos: [{
-    videoId: String,
-    length: Number,
-    replit: String,
-    creator: String,
-    channelId: String,
-  }]
+  videos: [{type: mongoose.Schema.Types.ObjectId, ref:'Video', default: null}]
 });
 
 pathSchema.set('toObject', {

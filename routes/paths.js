@@ -6,26 +6,36 @@ const ObjectId = require('mongoose').Types.ObjectId;
 
 const Path = require('../models/path');
 const User = require('../models/user');
+const UserPath = require('../models/userPath');
+const Creator = require('../models/creator');
+const Video = require('../models/video'); // Used by populate
 
 const jwtAuth = passport.authenticate('jwt', { session: false, failWithError: true });
 
-// GET all paths
+// GET all paths w/o populated video data
+// Used for explore page
 router.get('/', (req, res, next) => {
   Path.find()
+    .sort('title')
+    .populate('creator', 'name')
     .then(paths => {
       res.json(paths);
     })
     .catch(err => next(err));
 });
-
+ 
 router.get('/guest', (req, res, next) => {
   Path.find()
-    .limit(3)
+    .limit(2) // Updated to 3 when more paths are added
+    .populate('videos')
     .then(paths => {
+      paths[0].videos = [paths[0].videos[0]]; 
+      paths[1].videos = [paths[1].videos[0]]; 
+      //paths[2].videos = [paths[2].videos[0]]; 
       res.json(paths);
     })
     .catch(err => next(err));
-})
+});
 
 // GET one path by Id
 router.get('/:pathId', (req, res, next) => {
@@ -36,6 +46,8 @@ router.get('/:pathId', (req, res, next) => {
     return next(err);
   }
   Path.findById(pathId)
+    .populate('videos')
+    .populate('creator', 'name')
     .then(path => {
       if(path){
         res.json(path);
@@ -50,15 +62,24 @@ router.get('/:pathId', (req, res, next) => {
     .catch(err => next(err));
 });
 
-// GET data about a user's current path
+// GET data about a path with populated video data and user's progress
+// DEPRICATE 
 router.get('/u/:pathId', jwtAuth, (req, res, next) => {
   const { id } = req.user;
   const { pathId } = req.params;
+
+  // Validate
   if(!ObjectId.isValid(pathId)){
     const err = new Error('Provided pathId is not a valid ObjectId');
     err.status = 400;
     return next(err);
   }
+  if(!ObjectId.isValid(id)){
+    const err = new Error('Provided pathId is not a valid ObjectId');
+    err.status = 400;
+    return next(err);
+  }
+
   User.findById(id)
     .then(user => {
       let returnPath = {};
@@ -249,8 +270,6 @@ router.post('/start', jwtAuth, (req, res, next) => {
     });
 });
 
-
-
 router.post('/display', jwtAuth, (req, res, next) => {
   const { id } = req.user;
   const { pathId } = req.body;
@@ -279,31 +298,6 @@ router.post('/display', jwtAuth, (req, res, next) => {
     .catch((err)=>{
       next(err);
     });
-});
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Get the path overview if the user is logged in
-router.get('/overview/:id', jwtAuth, (req, res, next) => {
-  const { username } = req.user;
-  console.log(username);
-});
-
-// Get the path overview if no user is logged in
-router.get('/guest-overview/:id', (req, res, next) => {
-  console.log('no user');
 });
 
 module.exports = router;
