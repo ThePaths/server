@@ -13,9 +13,11 @@ const Video = require('../models/video'); // Used by populate
 const jwtAuth = passport.authenticate('jwt', { session: false, failWithError: true });
 
 // GET all paths w/o populated video data
+// Used for explore page
 router.get('/', (req, res, next) => {
   Path.find()
     .sort('title')
+    .populate('creator', 'name')
     .then(paths => {
       res.json(paths);
     })
@@ -27,9 +29,9 @@ router.get('/guest', (req, res, next) => {
     .limit(2) // Updated to 3 when more paths are added
     .populate('videos')
     .then(paths => {
-      paths[0].videos.pop();
-      paths[1].videos.pop();
-      //paths[2].videos.pop();
+      paths[0].videos = [paths[0].videos[0]]; 
+      paths[1].videos = [paths[1].videos[0]]; 
+      //paths[2].videos = [paths[2].videos[0]]; 
       res.json(paths);
     })
     .catch(err => next(err));
@@ -297,6 +299,5 @@ router.post('/display', jwtAuth, (req, res, next) => {
       next(err);
     });
 });
-
 
 module.exports = router;
