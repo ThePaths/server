@@ -165,6 +165,27 @@ router.put('/complete', (req, res, next) => {
     });
 });
 
+router.put('/completeVideo',  (req, res, next) => {
+  const userId = req.user.id;
+  const { pathId, videoIndex } = req.body;
+  UserPaths.findOne({userId})
+    .then((userpath) => {
+      let pathIndex = userpath.currentPaths.findIndex((currentPath) => {
+        return currentPath.path.toString() === pathId;
+      });
+      if(pathIndex > -1){
+        userpath.currentPaths[pathIndex].completedVideos[videoIndex] = true;
+        userpath.markModified('currentPaths');
+        userpath.save();
+      }
+      return;
+    })
+    .then(() => {
+      res.status(200).json();
+    })
+    .catch((err) => next(err));
+});
+
 
 
 module.exports = router;
