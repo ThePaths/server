@@ -46,13 +46,13 @@ router.put('/save', (req, res, next) => {
         }
         if(!duplicate){
           userpath.savedPaths.push(pathId);
-          userpath.save((err, savedObj) => {
-            res.status(200).json(savedObj.savedPaths);
-          });
-        } else {
-          res.status(200).json(userpath.savedPaths);
+          userpath.save();
         }
       });
+      return;
+    })
+    .then(() => {
+      res.status(200).send('saved');
     })
     .catch(err => {
       next(err);
@@ -75,12 +75,12 @@ router.put('/unsave', (req, res, next) => {
       let indexOfPath = userpath.savedPaths.indexOf(pathId);
       if(indexOfPath > -1){
         userpath.savedPaths.splice(indexOfPath, 1);
-        userpath.save((err, savedObj) => {
-          res.status(200).json(savedObj.savedPaths);
-        });
-      } else {
-        res.status(200).json(userpath.savedPaths);
+        userpath.save();
       }
+      return;
+    })
+    .then(() => {
+      res.status(200).send('none');
     })
     .catch(err => {
       next(err);
@@ -121,7 +121,7 @@ router.put('/start', (req, res, next) => {
       return;
     })
     .then(() => {
-      res.status(202).send();
+      res.status(202).send('current');
     })
     .catch(err => {
       next(err);
