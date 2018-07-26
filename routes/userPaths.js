@@ -67,8 +67,8 @@ router.put('/save', (req, res, next) => {
         return userpath.save();
       }
     })
-    .then((user) => {
-      res.json(user);
+    .then((userpath) => {
+      res.json(userpath);
     })
     .catch(err => {
       next(err);
@@ -95,8 +95,8 @@ router.put('/unsave', (req, res, next) => {
         return userpath.save();
       }
     })
-    .then((user) => {
-      res.json(user);
+    .then((userpath) => {
+      res.json(userpath);
     })
     .catch(err => {
       next(err);
@@ -144,8 +144,33 @@ router.put('/start', (req, res, next) => {
     });
 });
 
-router.delete('/unstart', (req, res, next) => {
-  // remove path from current paths 
+router.put('/unstart', (req, res, next) => {
+  const userId = req.user.id;
+  const { pathId } = req.body;
+  if (!ObjectId.isValid(pathId) || !ObjectId.isValid(userId)) {
+    const err = new Error('Provided path Id or user Id is not a valid ObjectId');
+    err.status = 400;
+    return next(err);
+  }
+  UserPaths.findOne({ userId })
+    .then(userpath => {
+      // Add error and empty return handling
+
+      let indexOfPath = userpath.currentPaths.findIndex(currentPath => currentPath.path.toString() === pathId);
+      if (indexOfPath > -1) {
+        userpath.currentPaths.splice(indexOfPath, 1);
+        userpath.markModified('currentPaths');
+        return userpath.save();
+      } else {
+        return userpath.save();
+      }
+    })
+    .then((userpath) => {
+      res.json(userpath);
+    })
+    .catch(err => {
+      next(err);
+    });
 });
 
 router.put('/reset', (req, res, next) => {
@@ -213,7 +238,5 @@ router.put('/completeVideo', (req, res, next) => {
 router.delete('/uncomplete', (req, res, next) => {
   // remove path from completed
 });
-
-
 
 module.exports = router;
