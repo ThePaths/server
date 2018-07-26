@@ -48,14 +48,39 @@ router.put('/save', (req, res, next) => {
           userpath.savedPaths.push(pathId);
           userpath.save();
         }
-
-        // Add validation path is not current or completed
-
       });
       return;
     })
     .then(() => {
-      res.status(202).send();
+      res.status(200).send('Saved');
+    })
+    .catch(err => {
+      next(err);
+    });
+});
+
+router.put('/unsave', (req, res, next) => {
+  const userId = req.user.id;
+  const { pathId } = req.body;
+  if(!ObjectId.isValid(pathId) || !ObjectId.isValid(userId)){
+    const err = new Error('Provided path Id or user Id is not a valid ObjectId');
+    err.status = 400;
+    return next(err);
+  }
+  UserPaths.findOne({userId})
+    .then(userpath => {
+
+      // Add error and empty return handling
+
+      let indexOfPath = userpath.savedPaths.indexOf(pathId);
+      if(indexOfPath > -1){
+        userpath.savedPaths.splice(indexOfPath, 1);
+        userpath.save();
+      }
+      return;
+    })
+    .then(() => {
+      res.status(200).send('Unsaved');
     })
     .catch(err => {
       next(err);
@@ -65,13 +90,11 @@ router.put('/save', (req, res, next) => {
 router.put('/start', (req, res, next) => {
   const userId = req.user.id;
   const { pathId } = req.body;
-
   if(!ObjectId.isValid(pathId) || !ObjectId.isValid(userId)){
     const err = new Error('Provided path Id or user Id is not a valid ObjectId');
     err.status = 400;
     return next(err);
   }
-
   UserPaths.findOne({userId})
     .then(userpath => {
       // This findById is to verify the path exists
@@ -94,9 +117,6 @@ router.put('/start', (req, res, next) => {
           });
           userpath.save();
         }
-
-        // Add validation path is not current or completed
-
       });
       return;
     })
@@ -111,13 +131,11 @@ router.put('/start', (req, res, next) => {
 router.put('/complete', (req, res, next) => {
   const userId = req.user.id;
   const { pathId } = req.body;
-
   if(!ObjectId.isValid(pathId) || !ObjectId.isValid(userId)){
     const err = new Error('Provided path Id or user Id is not a valid ObjectId');
     err.status = 400;
     return next(err);
   }
-
   UserPaths.findOne({userId})
     .then(userpath => {
       // This findById is to verify the path exists
@@ -136,9 +154,6 @@ router.put('/complete', (req, res, next) => {
           userpath.completedPaths.push(pathId);
           userpath.save();
         }
-
-        // Add validation path is not current or completed
-
       });
       return;
     })
