@@ -148,6 +148,14 @@ router.put('/start', (req, res, next) => {
     });
 });
 
+router.delete('/unstart', (req, res, next) => {
+  // remove path from current paths 
+});
+
+router.put('/reset', (req, res, next) => {
+  // reset progress of a current path or move it back to current from completed
+});
+
 router.put('/complete', (req, res, next) => {
   const userId = req.user.id;
   const { pathId } = req.body;
@@ -204,6 +212,10 @@ router.put('/completeVideo',  (req, res, next) => {
       res.status(200).json();
     })
     .catch((err) => next(err));
+});
+
+router.delete('/uncomplete', (req, res, next) => {
+  // remove path from completed
 });
 
 
