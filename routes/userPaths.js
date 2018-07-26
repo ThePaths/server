@@ -52,7 +52,7 @@ router.put('/save', (req, res, next) => {
       return;
     })
     .then(() => {
-      res.status(200).send('saved');
+      res.status(200).json('saved');
     })
     .catch(err => {
       next(err);
@@ -80,7 +80,7 @@ router.put('/unsave', (req, res, next) => {
       return;
     })
     .then(() => {
-      res.status(200).send('none');
+      res.status(200).json('none');
     })
     .catch(err => {
       next(err);
