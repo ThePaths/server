@@ -20,6 +20,26 @@ router.get('/', (req, res, next) => {
     .catch(err => next(err));
 });
 
+router.get('/status/:pathId', (req, res, next) => {
+  const userId = req.user.id;
+  const { pathId } = req.params;
+  UserPaths.findOne({userId})
+    .then((userpath) => {
+      if(userpath.savedPaths.indexOf(pathId) > -1){
+        return res.status(200).json('saved');
+      } else if(userpath.completedPaths.indexOf(pathId) > -1){
+        return res.status(200).json('completed');
+      } else if(userpath.currentPaths.findIndex(currentPath => currentPath.path.toString() === pathId) > -1){
+        return res.status(200).json('current');
+      } else {
+        return res.status(200).json('none');
+      }
+    })
+    .catch(err => {
+      next(err);
+    });
+});
+
 router.put('/save', (req, res, next) => {
   const userId = req.user.id;
   const { pathId } = req.body;
