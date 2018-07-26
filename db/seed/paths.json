@@ -1,9 +1,5 @@
 [
     {
-        "heroSize": [
-            666,
-            370
-        ],
         "title": "CSS Layouts with Traversy Media",
         "hero": "https://i1.wp.com/www.silocreativo.com/en/wp-content/uploads/2017/04/flexbox-cssgrid-practical-example.png?fit=666%2C370&quality=100&strip=all&ssl=1",
         "pathCreator": "devOps2",
@@ -12,28 +8,26 @@
         "videos": [
             {
                 "length": 1198,
-                "id": "JJSoEo8JSnc",
                 "videoId": "JJSoEo8JSnc",
                 "replit": "https://repl.it/@ThePaths/JJSoEo8JSnc?lite=true",
                 "creator": "Traversy Media",
-                "creatorChannel": "UC29ju8bIPH5as8OGnQzwJyA"
+                "creatorChannel": "UC29ju8bIPH5as8OGnQzwJyA",
+                "videoTitle": "",
+                "videoDescription": ""
             },
             {
                 "length": 1674,
-                "id": "jV8B24rSN5o",
                 "videoId": "jV8B24rSN5o",
                 "replit": "https://repl.it/@ThePaths/jV8B24rSN5o?lite=true",
                 "creator": "Traversy Media",
-                "creatorChannel": "UC29ju8bIPH5as8OGnQzwJyA"
+                "creatorChannel": "UC29ju8bIPH5as8OGnQzwJyA",
+                "videoTitle": "",
+                "videoDescription": ""
             }
         ],
         "id": "5b4f9ee2de939e0e5c4d0b71"
     },
     {
-        "heroSize": [
-            512,
-            512
-        ],
         "title": "Intro to HTML & CSS with Traversy Media",
         "hero": "https://cdn3.iconfinder.com/data/icons/luchesa-vol-9/128/Html-512.png",
         "pathCreator": "devOps2",
@@ -42,28 +36,26 @@
         "videos": [
             {
                 "length": 3644,
-                "id": "UB1O30fR-EE",
                 "videoId": "UB1O30fR-EE",
                 "replit": "https://repl.it/@ThePaths/UB1O30fR-EE?lite=true",
                 "creator": "Traversy Media",
-                "creatorChannel": "UC29ju8bIPH5as8OGnQzwJyA"
+                "creatorChannel": "UC29ju8bIPH5as8OGnQzwJyA",
+                "videoTitle": "",
+                "videoDescription": ""
             },
             {
                 "length": 348,
-                "id": "yfoY53QXEnI",
                 "videoId": "yfoY53QXEnI",
                 "replit": "https://repl.it/@ThePaths/yfoY53QXEnI?lite=true",
                 "creator": "Traversy Media",
-                "creatorChannel": "UC29ju8bIPH5as8OGnQzwJyA"
+                "creatorChannel": "UC29ju8bIPH5as8OGnQzwJyA",
+                "videoTitle": "",
+                "videoDescription": ""
             }
         ],
         "id": "5b4f9ee2de939e0e5c4d0b70"
     },
     {
-        "heroSize": [
-            512,
-            512
-        ],
         "title": "Test Path",
         "hero": "http://www.seeicons.com/images/iconstore/512/seeicons__57b6e0457af37.png",
         "pathCreator": "devOps2",
@@ -72,27 +64,30 @@
         "videos": [
             {
                 "length": 348,
-                "id": "bCjWAI2lC20",
                 "videoId": "bCjWAI2lC20",
                 "replit": "https://repl.it/@Dameon1/firstRepl?lite=true",
                 "creator": "Theodore Anderson",
-                "creatorChannel": "UCFhC3Z6_9zjsxfBADZ-CEEg"
+                "creatorChannel": "UCFhC3Z6_9zjsxfBADZ-CEEg",
+                "videoTitle": "",
+                "videoDescription": ""
             },
             {
                 "length": 3644,
-                "id": "UB1O30fR-EE",
                 "videoId": "UB1O30fR-EE",
                 "replit": "https://repl.it/@Dameon1/thirdReplit?lite=true",
                 "creator": "Traversy Media",
-                "creatorChannel": "UC29ju8bIPH5as8OGnQzwJyA"
+                "creatorChannel": "UC29ju8bIPH5as8OGnQzwJyA",
+                "videoTitle": "",
+                "videoDescription": ""
             },
             {
                 "length": 488,
-                "id": "h_3nR-Huxoo",
                 "videoId": "h_3nR-Huxoo",
                 "replit": "https://repl.it/@Dameon1/secondRepl?lite=true",
                 "creator": "ACADGILD",
-                "creatorChannel": "UCaQfgvMsjpImSxrJQDBjd-Q"
+                "creatorChannel": "UCaQfgvMsjpImSxrJQDBjd-Q",
+                "videoTitle": "",
+                "videoDescription": ""
             }
         ],
         "id": "5b4f9ee2de939e0e5c4d0b69"

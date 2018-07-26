@@ -23,13 +23,13 @@ router.get('/', (req, res, next) => {
 router.get('/status/:pathId', (req, res, next) => {
   const userId = req.user.id;
   const { pathId } = req.params;
-  UserPaths.findOne({userId})
+  UserPaths.findOne({ userId })
     .then((userpath) => {
-      if(userpath.savedPaths.indexOf(pathId) > -1){
+      if (userpath.savedPaths.indexOf(pathId) > -1) {
         return res.status(200).json('saved');
-      } else if(userpath.completedPaths.indexOf(pathId) > -1){
+      } else if (userpath.completedPaths.indexOf(pathId) > -1) {
         return res.status(200).json('completed');
-      } else if(userpath.currentPaths.findIndex(currentPath => currentPath.path.toString() === pathId) > -1){
+      } else if (userpath.currentPaths.findIndex(currentPath => currentPath.path.toString() === pathId) > -1) {
         return res.status(200).json('current');
       } else {
         return res.status(200).json('none');
@@ -44,35 +44,31 @@ router.put('/save', (req, res, next) => {
   const userId = req.user.id;
   const { pathId } = req.body;
 
-  if(!ObjectId.isValid(pathId) || !ObjectId.isValid(userId)){
+  if (!ObjectId.isValid(pathId) || !ObjectId.isValid(userId)) {
     const err = new Error('Provided path Id or user Id is not a valid ObjectId');
     err.status = 400;
     return next(err);
   }
 
-  UserPaths.findOne({userId})
+  UserPaths.findOne({ userId })
     .then(userpath => {
-      // This findById is to verify the path exists
-      Path.findById(pathId, (err, path) => {
-
-        // Add error and empty return handling
-
-        let duplicate = false;
-        for(let i = 0; i < userpath.savedPaths.length; i++){
-          if(userpath.savedPaths[i]._id.toString() === pathId){
-            duplicate = true;
-            break;
-          }
+      // Add error and empty return handling
+      let duplicate = false;
+      for (let i = 0; i < userpath.savedPaths.length; i++) {
+        if (userpath.savedPaths[i]._id.toString() === pathId) {
+          duplicate = true;
+          break;
         }
-        if(!duplicate){
-          userpath.savedPaths.push(pathId);
-          userpath.save();
-        }
-      });
-      return;
+      }
+      if (!duplicate) {
+        userpath.savedPaths.push(pathId);
+        return userpath.save();
+      } else {
+        return userpath.save();
+      }
     })
-    .then(() => {
-      res.status(200).json('saved');
+    .then((user) => {
+      res.json(user);
     })
     .catch(err => {
       next(err);
@@ -82,25 +78,25 @@ router.put('/save', (req, res, next) => {
 router.put('/unsave', (req, res, next) => {
   const userId = req.user.id;
   const { pathId } = req.body;
-  if(!ObjectId.isValid(pathId) || !ObjectId.isValid(userId)){
+  if (!ObjectId.isValid(pathId) || !ObjectId.isValid(userId)) {
     const err = new Error('Provided path Id or user Id is not a valid ObjectId');
     err.status = 400;
     return next(err);
   }
-  UserPaths.findOne({userId})
+  UserPaths.findOne({ userId })
     .then(userpath => {
-
       // Add error and empty return handling
 
       let indexOfPath = userpath.savedPaths.indexOf(pathId);
-      if(indexOfPath > -1){
+      if (indexOfPath > -1) {
         userpath.savedPaths.splice(indexOfPath, 1);
-        userpath.save();
+        return userpath.save();
+      } else {
+        return userpath.save();
       }
-      return;
     })
-    .then(() => {
-      res.status(200).json('none');
+    .then((user) => {
+      res.json(user);
     })
     .catch(err => {
       next(err);
@@ -110,12 +106,12 @@ router.put('/unsave', (req, res, next) => {
 router.put('/start', (req, res, next) => {
   const userId = req.user.id;
   const { pathId } = req.body;
-  if(!ObjectId.isValid(pathId) || !ObjectId.isValid(userId)){
+  if (!ObjectId.isValid(pathId) || !ObjectId.isValid(userId)) {
     const err = new Error('Provided path Id or user Id is not a valid ObjectId');
     err.status = 400;
     return next(err);
   }
-  UserPaths.findOne({userId})
+  UserPaths.findOne({ userId })
     .then(userpath => {
       // This findById is to verify the path exists
       Path.findById(pathId, (err, path) => {
@@ -123,13 +119,13 @@ router.put('/start', (req, res, next) => {
         // Add error and empty return handling
 
         let duplicate = false;
-        for(let i = 0; i < userpath.currentPaths.length; i++){
-          if(userpath.currentPaths[i].path.toString() === pathId){
+        for (let i = 0; i < userpath.currentPaths.length; i++) {
+          if (userpath.currentPaths[i].path.toString() === pathId) {
             duplicate = true;
             break;
           }
         }
-        if(!duplicate){
+        if (!duplicate) {
           userpath.currentPaths.push({
             path: pathId,
             completedVideos: Array(path.videos.length).fill(false),
@@ -159,12 +155,12 @@ router.put('/reset', (req, res, next) => {
 router.put('/complete', (req, res, next) => {
   const userId = req.user.id;
   const { pathId } = req.body;
-  if(!ObjectId.isValid(pathId) || !ObjectId.isValid(userId)){
+  if (!ObjectId.isValid(pathId) || !ObjectId.isValid(userId)) {
     const err = new Error('Provided path Id or user Id is not a valid ObjectId');
     err.status = 400;
     return next(err);
   }
-  UserPaths.findOne({userId})
+  UserPaths.findOne({ userId })
     .then(userpath => {
       // This findById is to verify the path exists
       Path.findById(pathId, (err, path) => {
@@ -172,13 +168,13 @@ router.put('/complete', (req, res, next) => {
         // Add error and empty return handling
 
         let duplicate = false;
-        for(let i = 0; i < userpath.completedPaths.length; i++){
-          if(userpath.completedPaths[i]._id.toString() === pathId){
+        for (let i = 0; i < userpath.completedPaths.length; i++) {
+          if (userpath.completedPaths[i]._id.toString() === pathId) {
             duplicate = true;
             break;
           }
         }
-        if(!duplicate){
+        if (!duplicate) {
           userpath.completedPaths.push(pathId);
           userpath.save();
         }
@@ -193,15 +189,15 @@ router.put('/complete', (req, res, next) => {
     });
 });
 
-router.put('/completeVideo',  (req, res, next) => {
+router.put('/completeVideo', (req, res, next) => {
   const userId = req.user.id;
   const { pathId, videoIndex } = req.body;
-  UserPaths.findOne({userId})
+  UserPaths.findOne({ userId })
     .then((userpath) => {
       let pathIndex = userpath.currentPaths.findIndex((currentPath) => {
         return currentPath.path.toString() === pathId;
       });
-      if(pathIndex > -1){
+      if (pathIndex > -1) {
         userpath.currentPaths[pathIndex].completedVideos[videoIndex] = true;
         userpath.markModified('currentPaths');
         userpath.save();
