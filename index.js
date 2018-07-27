@@ -1,58 +1,55 @@
 'use strict';
-
+// Dependencies
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
-require('dotenv').config();
-
-
-const { PORT, CLIENT_ORIGIN } = require('./config');
-const { dbConnect } = require('./db-mongoose');
-
 const passport = require('passport');
+const { dbConnect } = require('./db-mongoose');
+// Config & enviorment variables
+require('dotenv').config();
+const { PORT, CLIENT_ORIGIN } = require('./config');
+// Authentication Strategies
 const localStrategy = require('./passport/local');
 const jwtStrategy = require('./passport/jwt');
 
-const usersRouter = require('./routes/users');
-const authRouter = require('./routes/auth');
-const pathsRouter = require('./routes/paths');
-const userPathsRouter = require('./routes/userPaths');
-const overviewRouter = require('./routes/overview');
-const dashboardRouter = require('./routes/dashboard');
-
-
+// Initializing Express App
 const app = express();
 app.use(express.json());
 
+// Morgan logging middleware
 app.use(
   morgan(process.env.NODE_ENV === 'production' ? 'common' : 'dev', {
     skip: (req, res) => process.env.NODE_ENV === 'test'
   })
 );
 
+// Enable Cross-Origin Resource Sharing
 app.use(
   cors(/*{
-    origin: CLIENT_ORIGIN
+    origin: CLIENT_ORIGIN // Uncomment to restrict cors access
   }*/)
 );
 
+// Add strategies to passport authentication
 passport.use(localStrategy);
 passport.use(jwtStrategy);
 
-app.use('/api/users', usersRouter);
-app.use('/auth', authRouter);
-app.use('/api/paths', pathsRouter);
-app.use('/api/userpaths', userPathsRouter);
-app.use('/api/overview', overviewRouter);
-app.use('/api/dashboard', dashboardRouter);
+// Enable routers
+app.use('/api/users', require('./routes/users'));
+app.use('/auth', require('./routes/auth'));
+app.use('/api/paths', require('./routes/paths'));
+app.use('/api/userpaths', require('./routes/userpaths'));
+app.use('/api/overview', require('./routes/overview'));
+app.use('/api/dashboard', require('./routes/dashboard'));
 
-
+// 404(Not Found) error handling
 app.use(function (req, res, next) {
   const err = new Error('Not Found');
   err.status = 404;
   next(err);
 });
 
+// Catch-all non-404 error handling
 app.use(function (err, req, res, next) {
   res.status(err.status || 500);
   res.json({

@@ -1,18 +1,12 @@
 'use strict';
+// Dependencies
 const express = require('express');
 const router = express.Router();
-const passport = require('passport');
 const ObjectId = require('mongoose').Types.ObjectId;
-
+// Models & Schemas
 const Path = require('../models/path');
-const User = require('../models/user');
-const UserPath = require('../models/userPath');
-const Creator = require('../models/creator');
-const Video = require('../models/video'); // Used by populate
 
-const jwtAuth = passport.authenticate('jwt', { session: false, failWithError: true });
-
-// GET all paths w/o populated video data
+// GET all paths without populated video data
 // Used for explore page
 router.get('/', (req, res, next) => {
   Path.find()
@@ -60,25 +54,6 @@ router.get('/:pathId', (req, res, next) => {
       }
     })
     .catch(err => next(err));
-});
-
-router.post('/nextVideo', jwtAuth, (req, res, next) => {
-  const { id } = req.user;
-  const { pathId } = req.body;
-  User.findById(id, (err, user) => {
-    if(err){
-      next(err);
-    }
-    for(let i = 0; i < user.currentPaths.length; i++){
-      if(user.currentPaths[i].path.toString() === pathId){
-        user.currentPaths[i].currentVideoIndex = user.currentPaths[i].currentVideoIndex + 1; 
-        return user.save(() => {
-          res.status(201).json({message: 'Incremented index'});
-        });
-      }
-    }
-    return res.status(200).json({message: 'Recieved path is not a current path of user'});
-  });
 });
 
 

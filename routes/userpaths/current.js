@@ -1,107 +1,14 @@
 'use strict';
+// Dependencies
 const express = require('express');
 const router = express.Router();
-
 const passport = require('passport');
 const ObjectId = require('mongoose').Types.ObjectId;
-
-const UserPaths = require('../models/userPath');
-const Path = require('../models/path');
-const User = require('../models/user');
-
+// Models & Schemas
+const UserPaths = require('../../models/userPath');
+const Path = require('../../models/path');
+// Middleware
 router.use('/', passport.authenticate('jwt', { session: false, failWithError: true }));
-
-router.get('/', (req, res, next) => {
-  const userId = req.user.id;
-  UserPaths.find({ userId })
-    .then(results => {
-      res.json(results[0]);
-    })
-    .catch(err => next(err));
-});
-
-router.get('/status/:pathId', (req, res, next) => {
-  const userId = req.user.id;
-  const { pathId } = req.params;
-  UserPaths.findOne({ userId })
-    .then((userpath) => {
-      if (userpath.savedPaths.indexOf(pathId) > -1) {
-        return res.status(200).json('saved');
-      } else if (userpath.completedPaths.indexOf(pathId) > -1) {
-        return res.status(200).json('completed');
-      } else if (userpath.currentPaths.findIndex(currentPath => currentPath.path.toString() === pathId) > -1) {
-        return res.status(200).json('current');
-      } else {
-        return res.status(200).json('none');
-      }
-    })
-    .catch(err => {
-      next(err);
-    });
-});
-
-router.put('/save', (req, res, next) => {
-  const userId = req.user.id;
-  const { pathId } = req.body;
-
-  if (!ObjectId.isValid(pathId) || !ObjectId.isValid(userId)) {
-    const err = new Error('Provided path Id or user Id is not a valid ObjectId');
-    err.status = 400;
-    return next(err);
-  }
-
-  UserPaths.findOne({ userId })
-    .then(userpath => {
-      // Add error and empty return handling
-      let duplicate = false;
-      for (let i = 0; i < userpath.savedPaths.length; i++) {
-        if (userpath.savedPaths[i]._id.toString() === pathId) {
-          duplicate = true;
-          break;
-        }
-      }
-      if (!duplicate) {
-        userpath.savedPaths.push(pathId);
-        return userpath.save();
-      } else {
-        return userpath.save();
-      }
-    })
-    .then((userpath) => {
-      res.json(userpath);
-    })
-    .catch(err => {
-      next(err);
-    });
-});
-
-router.put('/unsave', (req, res, next) => {
-  const userId = req.user.id;
-  const { pathId } = req.body;
-  if (!ObjectId.isValid(pathId) || !ObjectId.isValid(userId)) {
-    const err = new Error('Provided path Id or user Id is not a valid ObjectId');
-    err.status = 400;
-    return next(err);
-  }
-  UserPaths.findOne({ userId })
-    .then(userpath => {
-      // Add error and empty return handling
-
-      let indexOfPath = userpath.savedPaths.indexOf(pathId);
-      if (indexOfPath > -1) {
-        userpath.savedPaths.splice(indexOfPath, 1);
-        return userpath.save();
-      } else {
-        return userpath.save();
-      }
-    })
-    .then((userpath) => {
-      res.json(userpath);
-    })
-    .catch(err => {
-      next(err);
-    });
-});
 
 router.put('/start', (req, res, next) => {
   const userId = req.user.id;
@@ -218,47 +125,6 @@ router.put('/setVideoIndex', (req, res, next) => {
   });
 });
 
-router.put('/reset', (req, res, next) => {
-  // reset progress of a current path or move it back to current from completed
-});
-
-router.put('/complete', (req, res, next) => {
-  const userId = req.user.id;
-  const { pathId } = req.body;
-  if (!ObjectId.isValid(pathId) || !ObjectId.isValid(userId)) {
-    const err = new Error('Provided path Id or user Id is not a valid ObjectId');
-    err.status = 400;
-    return next(err);
-  }
-  UserPaths.findOne({ userId })
-    .then(userpath => {
-      // This findById is to verify the path exists
-      Path.findById(pathId, (err, path) => {
-
-        // Add error and empty return handling
-
-        let duplicate = false;
-        for (let i = 0; i < userpath.completedPaths.length; i++) {
-          if (userpath.completedPaths[i]._id.toString() === pathId) {
-            duplicate = true;
-            break;
-          }
-        }
-        if (!duplicate) {
-          userpath.completedPaths.push(pathId);
-          userpath.save();
-        }
-      });
-      return userpath;
-    })
-    .then((userpath) => {
-      res.status(202).json(userpath);
-    })
-    .catch(err => {
-      next(err);
-    });
-});
-
 router.put('/completeVideo', (req, res, next) => {
   const userId = req.user.id;
   let { pathId, videoIndex } = req.body;
@@ -281,8 +147,8 @@ router.put('/completeVideo', (req, res, next) => {
     .catch((err) => next(err));
 });
 
-router.delete('/uncomplete', (req, res, next) => {
-  // remove path from completed
+router.put('/reset', (req, res, next) => {
+  // reset progress of a current path or move it back to current from completed
 });
 
 module.exports = router;

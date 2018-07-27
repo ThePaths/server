@@ -1,14 +1,11 @@
 'use strict';
+// Dependencies
 const express = require('express');
 const router = express.Router();
 const passport = require('passport');
-const ObjectId = require('mongoose').Types.ObjectId;
-
-const Path = require('../models/path');
+// Models & Schemas
 const UserPath = require('../models/userPath');
-const Creator = require('../models/creator'); 
-const Video = require('../models/video'); 
-
+// Middleware
 const jwtAuth = passport.authenticate('jwt', { session: false, failWithError: true });
 
 router.get('/keeplearning', jwtAuth, (req, res, next) => {

@@ -1,5 +1,4 @@
 'use strict';
-
 const mongoose = require('mongoose');
 
 const pathSchema = mongoose.Schema({

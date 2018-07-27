@@ -1,14 +1,13 @@
 'use strict';
+// Dependencies
 const express = require('express');
 const router = express.Router();
 const passport = require('passport');
 const ObjectId = require('mongoose').Types.ObjectId;
-
+// Models & Schemas
 const Path = require('../models/path');
 const UserPath = require('../models/userPath');
-const Creator = require('../models/creator'); // Used by populate
-const Video = require('../models/video'); // Used by populate
-
+// Middleware
 const jwtAuth = passport.authenticate('jwt', { session: false, failWithError: true });
 
 router.get('/:pathId', jwtAuth, (req, res, next) => {

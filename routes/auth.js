@@ -1,18 +1,16 @@
 'use strict';
-
+// Dependencies
 const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
-
 const passport = require('passport');
-
+// Configuartion & Enviorment Variables
 const { JWT_SECRET, JWT_EXPIRY } = require('../config');
-
+const options = { session: false, failWithError: true };
+// Models & Schemas
 const User = require('../models/user');
 const UserPaths = require('../models/userPath');
-
-const options = { session: false, failWithError: true };
-
+// Middleware
 const localAuth = passport.authenticate('local', options);
 const jwtAuth = passport.authenticate('jwt', {session: false});
 
