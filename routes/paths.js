@@ -5,6 +5,8 @@ const router = express.Router();
 const ObjectId = require('mongoose').Types.ObjectId;
 // Models & Schemas
 const Path = require('../models/path');
+const Creator = require('../models/creator'); // Is actully used by .populate('creator', 'name');
+const Video = require('../models/video');
 
 // GET all paths without populated video data
 // Used for explore page

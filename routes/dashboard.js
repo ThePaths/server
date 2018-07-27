@@ -5,6 +5,7 @@ const router = express.Router();
 const passport = require('passport');
 // Models & Schemas
 const UserPath = require('../models/userPath');
+const Path = require('../models/path');
 // Middleware
 const jwtAuth = passport.authenticate('jwt', { session: false, failWithError: true });
 

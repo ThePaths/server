@@ -7,6 +7,8 @@ const ObjectId = require('mongoose').Types.ObjectId;
 // Models & Schemas
 const Path = require('../models/path');
 const UserPath = require('../models/userPath');
+const Creator = require('../models/creator');
+const Videos = require('../models/video');
 // Middleware
 const jwtAuth = passport.authenticate('jwt', { session: false, failWithError: true });
 
