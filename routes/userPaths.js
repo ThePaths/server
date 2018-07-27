@@ -261,7 +261,8 @@ router.put('/complete', (req, res, next) => {
 
 router.put('/completeVideo', (req, res, next) => {
   const userId = req.user.id;
-  const { pathId, videoIndex } = req.body;
+  let { pathId, videoIndex } = req.body;
+  videoIndex = parseInt(videoIndex);
   UserPaths.findOne({ userId })
     .then((userpath) => {
       let pathIndex = userpath.currentPaths.findIndex((currentPath) => {
