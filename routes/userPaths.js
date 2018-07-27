@@ -196,7 +196,7 @@ router.put('/setVideoIndex', (req, res, next) => {
           if(err){
             next(err);
           } else {
-            return res.status(200).json('Provided `videoIndex` was outside of appropriate range. Set to max index.');
+            return res.status(200).json(/*'Provided `videoIndex` was outside of appropriate range. Set to max index.'*/);
           }
         });
       } else {
