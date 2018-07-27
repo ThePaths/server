@@ -249,10 +249,10 @@ router.put('/complete', (req, res, next) => {
           userpath.save();
         }
       });
-      return;
+      return userpath;
     })
-    .then(() => {
-      res.status(202).send();
+    .then((userpath) => {
+      res.status(202).json(userpath);
     })
     .catch(err => {
       next(err);
