@@ -173,6 +173,51 @@ router.put('/unstart', (req, res, next) => {
     });
 });
 
+router.put('/setVideoIndex', (req, res, next) => {
+  const userId = req.user.id;
+  const { pathId, videoIndex } = req.body;
+  if (!ObjectId.isValid(pathId) || !ObjectId.isValid(userId) || typeof videoIndex !== 'number') {
+    const err = new Error('Provided `pathId`, `userId`, or `videoIndex` is not valid');
+    err.status = 400;
+    return next(err);
+  }
+  return UserPaths.findOne({ userId }, (err, userpath) => {
+    if(err){
+      return next(err);
+    }
+    let indexOfPath = userpath.currentPaths.findIndex(currentPath => {
+      return currentPath.path.toString() === pathId;
+    });
+    if(indexOfPath > -1){
+      if(userpath.currentPaths[indexOfPath].completedVideos.length-1 < videoIndex){
+        userpath.currentPaths[indexOfPath].lastVideoIndex = userpath.currentPaths[indexOfPath].completedVideos.length-1;
+        userpath.markModified(`currentPaths[${indexOfPath}]`);
+        userpath.save((err) => {
+          if(err){
+            next(err);
+          } else {
+            return res.status(200).json('Provided `videoIndex` was outside of appropriate range. Set to max index.');
+          }
+        });
+      } else {
+        userpath.currentPaths[indexOfPath].lastVideoIndex = videoIndex;
+        userpath.markModified(`currentPaths[${indexOfPath}]`);
+        userpath.save((err) => {
+          if(err){
+            next(err);
+          } else {
+            return res.status(200).json();
+          }
+        });
+      }
+    } else {
+      const err = new Error('Provided pathId was not found in user`s current paths');
+      err.status = 404;
+      return next(err);
+    }
+  });
+});
+
 router.put('/reset', (req, res, next) => {
   // reset progress of a current path or move it back to current from completed
 });
