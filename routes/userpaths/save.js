@@ -37,7 +37,7 @@ router.put('/save', (req, res, next) => {
       }
     })
     .then((userpath) => {
-      res.json(userpath);
+      res.status(200).json(userpath);
     })
     .catch(err => {
       next(err);
@@ -65,7 +65,7 @@ router.put('/unsave', (req, res, next) => {
       }
     })
     .then((userpath) => {
-      res.json(userpath);
+      res.status(200).json(userpath);
     })
     .catch(err => {
       next(err);

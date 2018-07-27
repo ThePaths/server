@@ -17,6 +17,8 @@ userPathSchema.set('toObject', {
     ret.id = ret._id;
     delete ret._id;
     delete ret.__v;
+    // Don't return unecessary auto-generated ObjectId for each object in currentPaths
+    ret.currentPaths.forEach(currPath => delete currPath._id);
   }
 });
 

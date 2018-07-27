@@ -1,13 +1,13 @@
 'use strict';
+// Config & enviorment variables
+require('dotenv').config();
+const { PORT, CLIENT_ORIGIN } = require('./config');
 // Dependencies
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
 const passport = require('passport');
 const { dbConnect } = require('./db-mongoose');
-// Config & enviorment variables
-require('dotenv').config();
-const { PORT, CLIENT_ORIGIN } = require('./config');
 // Authentication Strategies
 const localStrategy = require('./passport/local');
 const jwtStrategy = require('./passport/jwt');

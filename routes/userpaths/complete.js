@@ -40,7 +40,7 @@ router.put('/complete', (req, res, next) => {
       return userpath;
     })
     .then((userpath) => {
-      res.status(202).json(userpath);
+      res.status(200).json(userpath);
     })
     .catch(err => {
       next(err);

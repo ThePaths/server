@@ -44,7 +44,7 @@ router.put('/start', (req, res, next) => {
       return;
     })
     .then(() => {
-      res.status(202).send('current');
+      res.status(200).json('current');
     })
     .catch(err => {
       next(err);
@@ -73,7 +73,7 @@ router.put('/unstart', (req, res, next) => {
       }
     })
     .then((userpath) => {
-      res.json(userpath);
+      res.status(200).json(userpath);
     })
     .catch(err => {
       next(err);
@@ -103,7 +103,7 @@ router.put('/setVideoIndex', (req, res, next) => {
           if(err){
             next(err);
           } else {
-            return res.status(200).json(/*'Provided `videoIndex` was outside of range. Set to max index.'*/);
+            return res.status(204).json(/*'Provided `videoIndex` was outside of range. Set to max index.'*/);
           }
         });
       } else {
@@ -113,7 +113,7 @@ router.put('/setVideoIndex', (req, res, next) => {
           if(err){
             next(err);
           } else {
-            return res.status(200).json();
+            return res.status(204).json();
           }
         });
       }
@@ -142,7 +142,7 @@ router.put('/completeVideo', (req, res, next) => {
       return;
     })
     .then(() => {
-      res.status(200).json();
+      res.status(204).json();
     })
     .catch((err) => next(err));
 });
