@@ -139,20 +139,35 @@ router.put('/completeVideo', (req, res, next) => {
         userpath.markModified('currentPaths');
         userpath.save();
       }
-      return;
+      return userpath;
     })
-    .then(() => {
-      UserPaths.findOne({ userId })
-        .then((userpath) => {
-          let pathIndex = userpath.currentPaths.findIndex((currentPath) => {
-            return currentPath.path.toString() === pathId;
-          });
-          return userpath.currentPaths[pathIndex].completedVideos;
-        } )
-        .then((response) => res.json(response));      
+    .then((userpath) => {
+       let pathIndex = userpath.currentPaths.findIndex((currentPath) => {
+        return currentPath.path.toString() === pathId;
+      });
+      return userpath.currentPaths[pathIndex].completedVideos;
     })
+    .then((resp)=>res.json(resp))
+         
+    
     .catch((err) => next(err));
 });
+
+
+//     .then(() => {
+//       UserPaths.findOne({ userId })
+//         .then((userpath) => {
+//           let pathIndex = userpath.currentPaths.findIndex((currentPath) => {
+//             return currentPath.path.toString() === pathId;
+//           });
+//           console.log(userpath.currentPaths[pathIndex].completedVideos);
+//           return userpath.currentPaths[pathIndex].completedVideos;
+//         } )
+//         .then((response) => res.json(response));      
+//     })
+//     .catch((err) => next(err));
+// });
+
 
 router.put('/reset', (req, res, next) => {
   // reset progress of a current path or move it back to current from completed
