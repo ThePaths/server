@@ -142,7 +142,14 @@ router.put('/completeVideo', (req, res, next) => {
       return;
     })
     .then(() => {
-      res.status(204).json();
+      UserPaths.findOne({ userId })
+        .then((userpath) => {
+          let pathIndex = userpath.currentPaths.findIndex((currentPath) => {
+            return currentPath.path.toString() === pathId;
+          });
+          return userpath.currentPaths[pathIndex].completedVideos;
+        } )
+        .then((response) => res.json(response));      
     })
     .catch((err) => next(err));
 });
