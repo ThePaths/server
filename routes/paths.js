@@ -23,7 +23,11 @@ router.get('/', (req, res, next) => {
 router.get('/guest', (req, res, next) => {
   Path.find()
     .limit(2) // Updated to 3 when more paths are added
-    .populate('videos')
+    .populate('creator', 'name')
+    .populate({
+      path: 'videos',
+      populate: {path: 'creator', select: 'name youtube'}
+    })
     .then(paths => {
       paths[0].videos = [paths[0].videos[0]]; 
       paths[1].videos = [paths[1].videos[0]]; 
