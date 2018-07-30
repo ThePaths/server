@@ -20,8 +20,8 @@ app.use(express.json());
 app.use(
   cors({
     origin: CLIENT_ORIGIN
-  }));
-app.options('*', cors());
+  })
+);
 
 // Morgan logging middleware
 app.use(
