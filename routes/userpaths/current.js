@@ -82,7 +82,8 @@ router.put('/unstart', (req, res, next) => {
 
 router.put('/setVideoIndex', (req, res, next) => {
   const userId = req.user.id;
-  const { pathId, videoIndex } = req.body;
+  let { pathId, videoIndex } = req.body;
+  videoIndex = parseInt(videoIndex, 10);
   if (!ObjectId.isValid(pathId) || !ObjectId.isValid(userId) || typeof videoIndex !== 'number') {
     const err = new Error('Provided `pathId`, `userId`, or `videoIndex` is not valid');
     err.status = 400;
@@ -128,7 +129,7 @@ router.put('/setVideoIndex', (req, res, next) => {
 router.put('/completeVideo', (req, res, next) => {
   const userId = req.user.id;
   let { pathId, videoIndex } = req.body;
-  videoIndex = parseInt(videoIndex);
+  videoIndex = parseInt(videoIndex, 10);
   UserPaths.findOne({ userId })
     .then((userpath) => {
       let pathIndex = userpath.currentPaths.findIndex((currentPath) => {
@@ -142,32 +143,14 @@ router.put('/completeVideo', (req, res, next) => {
       return userpath;
     })
     .then((userpath) => {
-       let pathIndex = userpath.currentPaths.findIndex((currentPath) => {
+      let pathIndex = userpath.currentPaths.findIndex((currentPath) => {
         return currentPath.path.toString() === pathId;
       });
       return userpath.currentPaths[pathIndex].completedVideos;
     })
-    .then((resp)=>res.json(resp))
-         
-    
+    .then((result)=>res.json(result)) 
     .catch((err) => next(err));
 });
-
-
-//     .then(() => {
-//       UserPaths.findOne({ userId })
-//         .then((userpath) => {
-//           let pathIndex = userpath.currentPaths.findIndex((currentPath) => {
-//             return currentPath.path.toString() === pathId;
-//           });
-//           console.log(userpath.currentPaths[pathIndex].completedVideos);
-//           return userpath.currentPaths[pathIndex].completedVideos;
-//         } )
-//         .then((response) => res.json(response));      
-//     })
-//     .catch((err) => next(err));
-// });
-
 
 router.put('/reset', (req, res, next) => {
   // reset progress of a current path or move it back to current from completed
