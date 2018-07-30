@@ -16,18 +16,18 @@ const jwtStrategy = require('./passport/jwt');
 const app = express();
 app.use(express.json());
 
+// Enable Cross-Origin Resource Sharing
+app.use(
+  cors({
+    origin: CLIENT_ORIGIN
+  }));
+app.options('*', cors());
+
 // Morgan logging middleware
 app.use(
   morgan(process.env.NODE_ENV === 'production' ? 'common' : 'dev', {
     skip: (req, res) => process.env.NODE_ENV === 'test'
   })
-);
-
-// Enable Cross-Origin Resource Sharing
-app.use(
-  cors(/*{
-    origin: CLIENT_ORIGIN // Uncomment to restrict cors access
-  }*/)
 );
 
 // Add strategies to passport authentication
