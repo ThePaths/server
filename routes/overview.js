@@ -33,7 +33,7 @@ router.get('/:pathId', jwtAuth, (req, res, next) => {
     .populate('creator', 'name')
     .populate({
       path: 'videos',
-      populate: {path: 'creator', select: 'name'}
+      populate: {path: 'creator', select: 'name youtube'}
     })
     .then(path => {
       if(!path){
