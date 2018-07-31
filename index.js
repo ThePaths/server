@@ -35,12 +35,12 @@ passport.use(localStrategy);
 passport.use(jwtStrategy);
 
 // Enable routers
-app.use('/api/users', require('./routes/users'));
+app.use('/users', require('./routes/users'));
 app.use('/auth', require('./routes/auth'));
-app.use('/api/paths', require('./routes/paths'));
-app.use('/api/userpaths', require('./routes/userpaths'));
-app.use('/api/overview', require('./routes/overview'));
-app.use('/api/dashboard', require('./routes/dashboard'));
+app.use('/paths', require('./routes/paths'));
+app.use('/userpaths', require('./routes/userpaths'));
+app.use('/overview', require('./routes/overview'));
+app.use('/dashboard', require('./routes/dashboard'));
 
 // 404(Not Found) error handling
 app.use(function (req, res, next) {

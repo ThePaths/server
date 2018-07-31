@@ -21,6 +21,7 @@ router.get('/', (req, res, next) => {
 });
  
 router.get('/guest', (req, res, next) => {
+  console.log('guest path hit');
   Path.find()
     .limit(2) // Updated to 3 when more paths are added
     .populate('creator', 'name')
