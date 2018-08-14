@@ -5,8 +5,8 @@ const router = express.Router();
 const ObjectId = require('mongoose').Types.ObjectId;
 // Models & Schemas
 const Path = require('../models/path');
-const Creator = require('../models/creator'); // Is actully used by .populate('creator', 'name');
-const Video = require('../models/video');
+require('../models/creator'); // Is actully used by .populate('creator', 'name');
+require('../models/video');
 
 // GET all paths without populated video data
 // Used for explore page
@@ -21,14 +21,14 @@ router.get('/', (req, res, next) => {
 });
  
 router.get('/guest', (req, res, next) => {
-  console.log('guest path hit');
   Path.find()
-    .limit(2) // Updated to 3 when more paths are added
+    .limit(3)
     .populate('creator', 'name')
     .then(paths => {
       paths[0].videos = [paths[0].videos[0]]; 
       paths[1].videos = [paths[1].videos[0]]; 
-      //paths[2].videos = [paths[2].videos[0]]; 
+      paths[2].videos = [paths[2].videos[0]];
+      res.set('Cache-control', 'public, max-age=86400, s-maxage=86400'); 
       res.json(paths);
     })
     .catch(err => next(err));
@@ -51,6 +51,7 @@ router.get('/:pathId', (req, res, next) => {
     })
     .then(path => {
       if(path){
+        res.set('Cache-control', 'public, max-age=3600, s-maxage=3600'); 
         res.json(path);
       } else {
         Promise.reject({
@@ -62,6 +63,5 @@ router.get('/:pathId', (req, res, next) => {
     })
     .catch(err => next(err));
 });
-
 
 module.exports = router;

@@ -56,3 +56,8 @@ typings/
 
 # dotenv environment variables file
 .env
+
+*.yaml
+app.yaml
+/app.yaml
+/*.yaml

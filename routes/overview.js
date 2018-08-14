@@ -7,8 +7,8 @@ const ObjectId = require('mongoose').Types.ObjectId;
 // Models & Schemas
 const Path = require('../models/path');
 const UserPath = require('../models/userPath');
-const Creator = require('../models/creator');
-const Videos = require('../models/video');
+require('../models/creator'); // Used by populate
+require('../models/video');
 // Middleware
 const jwtAuth = passport.authenticate('jwt', { session: false, failWithError: true });
 
@@ -50,7 +50,7 @@ router.get('/:pathId', jwtAuth, (req, res, next) => {
         status : 'none',
         completedVideos : null,
         lastVideoIndex : null,
-      }
+      };
       UserPath.findOne({userId: id}, (err, userpath) => {
         if(err){
           next(err);
@@ -64,34 +64,26 @@ router.get('/:pathId', jwtAuth, (req, res, next) => {
         }
         if(userpath.savedPaths.indexOf(pathId) > -1){
           currPathObj.status = 'saved';
-          return res.status(200).json({
-            ...path.toObject(), 
-            ...currPathObj
-          });
+          const returnObj = Object.assign({}, path.toObject(), currPathObj);
+          return res.status(200).json(returnObj);
         } else if(userpath.completedPaths.indexOf(pathId) > -1){
           currPathObj.status= 'completed';
-          return res.status(200).json({
-            ...path.toObject(), 
-            ...currPathObj
-          });
+          const returnObj = Object.assign({}, path.toObject(), currPathObj);
+          return res.status(200).json(returnObj);
         } else {
           for(let currPath of userpath.currentPaths){
             if(currPath.path == pathId){
               currPathObj.status = 'current';
               currPathObj.completedVideos = currPath.completedVideos;
               currPathObj.lastVideoIndex = currPath.lastVideoIndex;
-              return res.status(200).json({
-                ...path.toObject(), 
-                ...currPathObj
-              });
+              const returnObj = Object.assign({}, path.toObject(), currPathObj);
+              return res.status(200).json(returnObj);
             }
           }
-          return res.status(200).json({
-            ...path.toObject(), 
-            ...currPathObj
-          });
+          const returnObj = Object.assign({}, path.toObject(), currPathObj);
+          return res.status(200).json(returnObj);
         }
-      })
+      });
     })
     .catch(err => {
       next(err);

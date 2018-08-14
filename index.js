@@ -1,42 +1,42 @@
 'use strict';
-// Config & enviorment variables
-require('dotenv').config();
-const { PORT, CLIENT_ORIGIN } = require('./config');
-// Dependencies
 const express = require('express');
+const app = express();
+app.use(express.json());
+
+// Config for development
+require('dotenv').config();
+const { PORT } = require('./config');
+
+// Dependencies
 const cors = require('cors');
 const morgan = require('morgan');
 const passport = require('passport');
 const { dbConnect } = require('./db-mongoose');
+
 // Authentication Strategies
 const localStrategy = require('./passport/local');
 const jwtStrategy = require('./passport/jwt');
-
-// Initializing Express App
-const app = express();
-app.use(express.json());
-
-// Enable Cross-Origin Resource Sharing
-app.use(
-  cors({
-    origin: CLIENT_ORIGIN
-  })
-);
-
-// Morgan logging middleware
-app.use(
-  morgan(process.env.NODE_ENV === 'production' ? 'common' : 'dev', {
-    skip: (req, res) => process.env.NODE_ENV === 'test'
-  })
-);
-
-// Add strategies to passport authentication
 passport.use(localStrategy);
 passport.use(jwtStrategy);
 
-// Enable routers
-app.use('/users', require('./routes/users'));
+// Connect DB
+// dbConnect();
+
+// Enable Cross-Origin Resource Sharing
+app.use(
+  cors()
+);
+
+// Enable morgan logging
+app.use(morgan('common'));
+
+// Testing endpoint
+app.get('/currentTime', (req, res) => {
+  res.json(Date.now());
+});
+
 app.use('/auth', require('./routes/auth'));
+app.use('/users', require('./routes/users'));
 app.use('/paths', require('./routes/paths'));
 app.use('/userpaths', require('./routes/userpaths'));
 app.use('/overview', require('./routes/overview'));
