@@ -8,7 +8,7 @@ you can find the front side code [Here](https://github.com/ThePaths/client)
 
 ## Where to find
 
-You can visit [https://the-paths-client.herokuapp.com](https://the-paths-client.herokuapp.com)!
+You can visit [https://melata-app.firebaseapp.com](https://melata-app.firebaseapp.com)!
 
 ## Instructions
 
