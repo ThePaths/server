@@ -22,10 +22,21 @@ passport.use(jwtStrategy);
 // Connect DB
 // dbConnect();
 
+app.use(function(request, response, next) {
+  response.header("Access-Control-Allow-Origin", "*");
+  response.header("Access-Control-Allow-Headers", 
+                  "Origin, X-Rquested-With, Content-Type, Accept");
+  next();
+});
+// app.use(cors({ 
+//   origin: 'http://localhost:3000' ,
+//   credentials :  true,  
+//   methods: 'GET,PUT,POST,OPTIONS',
+//   allowedHeaders: 'Content-Type,Authorization' }));
 // Enable Cross-Origin Resource Sharing
-app.use(
-  cors()
-);
+// app.use(
+//   cors()
+// );
 
 // Enable morgan logging
 app.use(morgan('common'));
